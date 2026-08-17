@@ -1,0 +1,2 @@
+# Nothing to install - the server uses only the Python standard library.
+# This file exists so the host has something to run its build step against.
