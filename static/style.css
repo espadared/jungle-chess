@@ -123,6 +123,14 @@ body {
 #statusLine { font-size: 16px; font-weight: 600; }
 .sub { font-size: 12px; color: var(--dim); min-height: 16px; }
 
+/* Which trap rule is in force - the one thing you cannot tell from the board. */
+.rulechip {
+  display: block; margin: 0 auto 8px;
+  background: rgba(244,201,93,.12); color: var(--gold);
+  border: 1px solid rgba(244,201,93,.35); border-radius: 999px;
+  padding: 4px 14px; font-size: 12.5px; cursor: pointer;
+}
+
 .roombar {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   background: var(--panel); border: 1px solid var(--line);

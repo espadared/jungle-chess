@@ -7,6 +7,13 @@
   var J = window.Jungle;
   var $ = function (id) { return document.getElementById(id); };
 
+  var VARIANT_NAME = {
+    classic: 'Classic traps',
+    open: 'Open traps · variation 1',
+    safe: 'Safe traps · variation 2',
+    home: 'Home refuge · variation 2b'
+  };
+
   var LEVEL_HINT = {
     easy: 'Easy: barely looks ahead and makes mistakes on purpose.',
     normal: 'Normal: thinks under a second. A fair club-level game.',
@@ -130,6 +137,7 @@
       cell.innerHTML = html;
     }
 
+    $('ruleChip').textContent = VARIANT_NAME[st.variant] || VARIANT_NAME.classic;
     renderCaptured();
     renderStatus(over);
     renderLog();
@@ -547,6 +555,7 @@
 
   $('openRules').addEventListener('click', function () { $('rulesModal').classList.remove('hidden'); });
   $('rulesBtn').addEventListener('click', function () { $('rulesModal').classList.remove('hidden'); });
+  $('ruleChip').addEventListener('click', function () { $('rulesModal').classList.remove('hidden'); });
   $('closeRules').addEventListener('click', function () { $('rulesModal').classList.add('hidden'); });
   $('rulesModal').addEventListener('click', function (e) {
     if (e.target === $('rulesModal')) $('rulesModal').classList.add('hidden');
