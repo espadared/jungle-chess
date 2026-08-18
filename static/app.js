@@ -208,8 +208,7 @@
     captured: 'captured every animal',
     stuck: 'the loser had no legal move left',
     resign: 'the other player resigned',
-    repetition: 'the same position came up three times',
-    quiet: '100 moves passed with nothing captured'
+    repetition: 'the same position came up three times'
   };
 
   function renderOverlay(over) {

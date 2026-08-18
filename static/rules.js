@@ -97,7 +97,7 @@
       board: new Int8Array(START),
       turn: 0,
       variant: variant || 'classic',
-      half: 0,           // plies since the last capture
+      half: 0,           // plies since the last capture - bounds the repetition scan
       winner: -1,
       draw: null,
       hi: 0, lo: 0,
@@ -262,7 +262,6 @@
     if (DEN[to] === (mover ^ 1)) st.winner = mover;            // walked into the den
     else if (!hasPieces(st, mover ^ 1)) st.winner = mover;      // wiped the board
     else if (repetitions(st) >= 3) st.draw = 'repetition';
-    else if (st.half >= 100) st.draw = 'quiet';
     return st;
   }
 
