@@ -266,7 +266,10 @@
       S.keysLo[S.keysLo.length - 1] = S.lo;
     }
 
-    var roots = J.genMoves(S, []);
+    // The repetition ban binds the computer exactly as it binds the player.
+    // Only the root needs filtering: deeper in the search a repeat already
+    // scores as a draw, so it never builds a plan around one.
+    var roots = J.legalMoves(S);
     // Shuffle so equally good moves are not always taken in board order - the
     // strong levels stay deterministic about strength, just not about ties.
     for (var sh = roots.length - 1; sh > 0; sh--) {

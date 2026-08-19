@@ -55,13 +55,28 @@ genuinely disagree about, so all four common readings are selectable:
 | **Safe traps** | An animal on **any** trap cannot be eaten at all. Both dens end up sealed by untouchable blockers, so games run long - in self-play these lasted 2-3x a classic game. |
 | **Home refuge** | Your **own** traps shelter your animals; the enemy's traps still strip rank. The long, defensive game. |
 
-## Draws are only ever an offer
+## Repetition: an offer, then a hard limit
 
 A threefold repetition offers a draw; **Play on** waives it and the game
 continues, and it will not be offered again for that game. Online, either
-player can waive it and the other simply plays on. After that only a den, a
-wipeout, or a player with no legal move can end the game. There is no
-no-capture move limit at all.
+player can waive it and the other simply plays on.
+
+Waiving the draw does **not** licence endless shuffling. No position may stand
+more than `REPEAT_LIMIT` (3) times: any move that would bring one back a fourth
+time is filtered out of the legal move list, for the player and for the
+computer alike. In the UI that square shows a red ✕ instead of a move dot. In
+practice the ban bites one cycle after a draw is waived.
+
+The check is cheap because only a quiet move can repeat anything - a capture
+changes the material permanently, so no earlier position can ever match again.
+It is applied to the moves offered to the player and to the computer's root
+move list; deeper in the search a repetition already scores as a draw, so the
+engine never builds a plan around one and the hot loop stays fast.
+
+If literally every move would repeat, the full list is handed back rather than
+declaring a bogus loss - it takes a nearly empty board to reach that.
+
+There is no no-capture move limit at all.
 
 When a game is over, **Look back through the moves** replays it one move at a
 time (arrow keys work). The position is rebuilt from the move list rather than

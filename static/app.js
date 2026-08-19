@@ -31,6 +31,8 @@
     st: null,
     sel: -1,
     targets: [],
+    blocked: [],         // squares this piece could reach but for the repetition rule
+    notice: null,        // one-off explanation shown under the status line
     last: null,
     log: [],
     moves: [],           // every move of this game, for the look-back
@@ -114,6 +116,7 @@
     var over = G.review ? null : outcomeNow();
     var sel = G.review ? -1 : G.sel;
     var targets = G.review ? [] : G.targets;
+    var blocked = G.review ? [] : G.blocked;
     var last = G.review ? G.review.last : G.last;
 
     for (var d = 0; d < 63; d++) {
@@ -131,6 +134,7 @@
       if (G.hint && i === G.hint.from) cls += ' hintfrom';
       if (G.hint && i === G.hint.to) cls += ' hintto';
       if (targets.indexOf(i) !== -1) cls += st.board[i] !== 0 ? ' take' : ' move';
+      else if (blocked.indexOf(i) !== -1) cls += ' blocked';
       cell.className = cls;
 
       var p = st.board[i];
@@ -215,6 +219,7 @@
       $('oppState').className = 'oppstate' + ((o.online && o.online[o.seat ^ 1]) ? ' on' : '');
     }
 
+    if (!over && G.notice) sub = G.notice;
     if (!over && G.desync) sub = G.desync;
     $('statusLine').textContent = line;
     if (!G.busy || G.pendingKind !== 'move') $('subLine').textContent = sub;
@@ -328,11 +333,24 @@
         if (J.mTo(moves[k]) === i) { doMove(moves[k]); return; }
       }
     }
+    // Tapping a square the repetition rule has closed off should say so,
+    // rather than just silently doing nothing.
+    if (G.sel !== -1 && G.blocked.indexOf(i) !== -1) {
+      G.notice = 'That would repeat the same position a ' +
+                 (J.REPEAT_LIMIT + 1) + 'th time — move something else.';
+      render();
+      return;
+    }
+
     if (p !== 0 && (p > 0 ? 0 : 1) === st.turn) {
       G.sel = i;
       G.targets = J.movesFrom(st, i).map(J.mTo);
+      G.blocked = J.rawMovesFrom(st, i).filter(function (m) {
+        return J.isRepeat(st, m);
+      }).map(J.mTo);
+      G.notice = null;
     } else {
-      G.sel = -1; G.targets = [];
+      G.sel = -1; G.targets = []; G.blocked = []; G.notice = null;
     }
     render();
   }
@@ -342,7 +360,7 @@
     G.moves.push(mv);
     G.last = { from: J.mFrom(mv), to: J.mTo(mv) };
     J.applyMove(G.st, mv);
-    G.sel = -1; G.targets = []; G.hint = null;
+    G.sel = -1; G.targets = []; G.blocked = []; G.notice = null; G.hint = null;
     render();
 
     if (G.mode === 'online') sendMove(mv);
@@ -368,7 +386,8 @@
   function newGame(variant) {
     G.st = J.newState(variant || G.variant);
     G.variant = G.st.variant;
-    G.sel = -1; G.targets = []; G.last = null; G.log = []; G.hint = null;
+    G.sel = -1; G.targets = []; G.blocked = []; G.notice = null;
+    G.last = null; G.log = []; G.hint = null;
     G.moves = []; G.review = null; G.resignedBy = null;
     G.busy = false; G.desync = null;
     G.reqId++;      // any answer still in flight belongs to the old game

@@ -215,6 +215,11 @@ body {
   content: ''; position: absolute; inset: 6%;
   border: 3px solid rgba(255,90,76,.95); border-radius: 50%;
 }
+/* Reachable, but the repetition rule closes it off. */
+.cell.blocked::before {
+  content: '✕'; position: absolute;
+  font-size: 62%; font-weight: 700; color: rgba(255,120,110,.8);
+}
 .cell.hintfrom, .cell.hintto { outline: 3px dashed #7fd8ff; outline-offset: -3px; }
 
 .overlay {

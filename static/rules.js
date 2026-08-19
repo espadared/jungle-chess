@@ -219,7 +219,15 @@
     return out;
   }
 
+  // What the player is actually offered - the repetition ban applies here.
   function movesFrom(st, from) {
+    var all = legalMoves(st), out = [];
+    for (var i = 0; i < all.length; i++) if (mFrom(all[i]) === from) out.push(all[i]);
+    return out;
+  }
+
+  // The same, ignoring the ban, so the board can explain why a square is closed.
+  function rawMovesFrom(st, from) {
     var all = genMoves(st, []), out = [];
     for (var i = 0; i < all.length; i++) if (mFrom(all[i]) === from) out.push(all[i]);
     return out;
@@ -241,6 +249,40 @@
       if (st.keysHi[i] === hi && st.keysLo[i] === lo) count++;
     }
     return count;
+  }
+
+  // A position may stand this many times. The move that would bring it about
+  // once more is simply not allowed - you have to move something else.
+  var REPEAT_LIMIT = 3;
+
+  // How many times the position after this move has already stood. Only a
+  // quiet move can repeat anything: a capture changes the material for good,
+  // so no earlier position can ever match again.
+  function repeatsAfter(st, mv) {
+    if (mCap(mv) !== 0) return 0;
+    var from = mFrom(mv), to = mTo(mv), p = st.board[from];
+    var kf = pieceKey(p) + from, kt = pieceKey(p) + to;
+    var hi = st.hi ^ ZH[kf] ^ ZH[kt] ^ TURN_HI;
+    var lo = st.lo ^ ZL[kf] ^ ZL[kt] ^ TURN_LO;
+    var n = st.keysHi.length, count = 0;
+    var stop = Math.max(0, n - 1 - st.half);
+    for (var i = n - 2; i >= stop; i -= 2) {      // same side to move as the child
+      if (st.keysHi[i] === hi && st.keysLo[i] === lo) count++;
+    }
+    return count;
+  }
+
+  function isRepeat(st, mv) { return repeatsAfter(st, mv) >= REPEAT_LIMIT; }
+
+  // Every move the rules allow, minus the ones that would stand a position for
+  // the fourth time. If that leaves nothing at all the rule cannot be obeyed,
+  // so hand back the full list rather than pretend the player is trapped.
+  function legalMoves(st) {
+    var all = genMoves(st, []), kept = [];
+    for (var i = 0; i < all.length; i++) {
+      if (!isRepeat(st, all[i])) kept.push(all[i]);
+    }
+    return kept.length ? kept : all;
   }
 
   function applyMove(st, mv) {
@@ -337,7 +379,9 @@
     WATER: WATER, TRAP: TRAP, DEN: DEN, NEI: NEI, JUMP: JUMP,
     newState: newState, clone: clone, rehash: rehash,
     mkMove: mkMove, mFrom: mFrom, mTo: mTo, mCap: mCap,
-    genMoves: genMoves, movesFrom: movesFrom, canCapture: canCapture,
+    genMoves: genMoves, movesFrom: movesFrom, rawMovesFrom: rawMovesFrom,
+    legalMoves: legalMoves, isRepeat: isRepeat, repeatsAfter: repeatsAfter,
+    REPEAT_LIMIT: REPEAT_LIMIT, canCapture: canCapture,
     applyMove: applyMove, undoMove: undoMove, resumeAfterDraw: resumeAfterDraw,
     outcome: outcome, hasPieces: hasPieces, repetitions: repetitions,
     coordName: coordName, moveText: moveText,
