@@ -33,7 +33,10 @@
     targets: [],
     last: null,
     log: [],
+    moves: [],           // every move of this game, for the look-back
+    review: null,        // {ply, st, last} while looking back
     busy: false,
+    resignedBy: null,    // side that gave up, when not playing online
     hint: null,
     worker: null,
     reqId: 0,
@@ -104,9 +107,14 @@
   function slotToIndex(d) { return G.flip ? 62 - d : d; }
 
   function render() {
-    var st = G.st;
+    // While looking back over a finished game the board shows an old position,
+    // so everything below reads from `st` rather than G.st directly.
+    var st = G.review ? G.review.st : G.st;
     if (!st) return;
-    var over = outcomeNow();
+    var over = G.review ? null : outcomeNow();
+    var sel = G.review ? -1 : G.sel;
+    var targets = G.review ? [] : G.targets;
+    var last = G.review ? G.review.last : G.last;
 
     for (var d = 0; d < 63; d++) {
       var i = slotToIndex(d);
@@ -118,11 +126,11 @@
       if (J.WATER[i]) cls += ' water';
       if (J.TRAP[i] !== -1) cls += ' trap';
       if (J.DEN[i] !== -1) cls += ' den';
-      if (i === G.sel) cls += ' sel';
-      if (G.last && (i === G.last.from || i === G.last.to)) cls += ' last';
+      if (i === sel) cls += ' sel';
+      if (last && (i === last.from || i === last.to)) cls += ' last';
       if (G.hint && i === G.hint.from) cls += ' hintfrom';
       if (G.hint && i === G.hint.to) cls += ' hintto';
-      if (G.targets.indexOf(i) !== -1) cls += st.board[i] !== 0 ? ' take' : ' move';
+      if (targets.indexOf(i) !== -1) cls += st.board[i] !== 0 ? ' take' : ' move';
       cell.className = cls;
 
       var p = st.board[i];
@@ -138,16 +146,17 @@
     }
 
     $('ruleChip').textContent = VARIANT_NAME[st.variant] || VARIANT_NAME.classic;
-    renderCaptured();
+    renderCaptured(st);
     renderStatus(over);
     renderLog();
     renderOverlay(over);
+    renderReviewBar();
   }
 
-  function renderCaptured() {
+  function renderCaptured(st) {
     var alive = [{}, {}];
     for (var i = 0; i < 63; i++) {
-      var p = G.st.board[i];
+      var p = st.board[i];
       if (p !== 0) alive[p > 0 ? 0 : 1][p > 0 ? p : -p] = 1;
     }
     var topSide = G.flip ? 0 : 1;
@@ -168,12 +177,22 @@
       var loser = G.online.colors[G.online.resigned];
       return { winner: loser ^ 1, reason: 'resign' };
     }
+    if (G.resignedBy !== null && G.resignedBy !== undefined) {
+      return { winner: G.resignedBy ^ 1, reason: 'resign' };
+    }
     return J.outcome(G.st);
   }
 
   function renderStatus(over) {
     var line = '', sub = '';
     var turn = G.st.turn;
+
+    if (G.review) {
+      $('statusLine').textContent = 'Looking back';
+      $('subLine').textContent = G.review.ply === 0 ? 'the opening position'
+        : 'after ' + G.log[G.review.ply - 1];
+      return;
+    }
 
     if (over) {
       line = over.winner === -1 ? 'Draw' : sideName(over.winner) + ' wins';
@@ -204,11 +223,14 @@
   function renderLog() {
     var html = '';
     for (var i = 0; i < G.log.length; i++) {
-      html += '<span class="mv">' + (i % 2 === 0 ? ((i / 2 | 0) + 1) + '. ' : '') +
-              G.log[i] + '</span>';
+      var here = G.review && G.review.ply === i + 1;
+      html += '<span class="mv' + (here ? ' at' : '') + '">' +
+              (i % 2 === 0 ? ((i / 2 | 0) + 1) + '. ' : '') + G.log[i] + '</span>';
     }
     $('moveLog').innerHTML = html;
-    $('moveLog').scrollTop = $('moveLog').scrollHeight;
+    var mark = $('moveLog').querySelector('.mv.at');
+    if (mark) mark.scrollIntoView({ block: 'nearest' });
+    else $('moveLog').scrollTop = $('moveLog').scrollHeight;
   }
 
   var REASONS = {
@@ -235,6 +257,10 @@
         : (youWon ? 'You win!' : 'You lose'));
     $('overText').textContent = REASONS[over.reason] || '';
 
+    // A draw is only ever a suggestion - either player can wave it off.
+    $('resumeBtn').classList.toggle('hidden', over.winner !== -1);
+    $('reviewBtn').classList.toggle('hidden', G.moves.length === 0);
+
     var note = $('rematchNote');
     if (G.mode === 'online' && G.online.rematch) {
       note.classList.remove('hidden');
@@ -246,8 +272,45 @@
     }
   }
 
+  // ------------------------------------------------------- looking back
+  // Rebuild the position from the start rather than unwinding the live game,
+  // so nothing that happens in here can disturb the real board.
+  function positionAtPly(n) {
+    var st = J.newState(G.variant);
+    st.allowRepeat = true;              // never re-declare a draw while reviewing
+    for (var i = 0; i < n && i < G.moves.length; i++) J.applyMove(st, G.moves[i]);
+    return st;
+  }
+
+  function gotoPly(n) {
+    n = Math.max(0, Math.min(n, G.moves.length));
+    var st = positionAtPly(n);
+    var mv = n > 0 ? G.moves[n - 1] : null;
+    G.review = {
+      ply: n, st: st,
+      last: mv === null ? null : { from: J.mFrom(mv), to: J.mTo(mv) }
+    };
+    render();
+  }
+
+  function exitReview() {
+    G.review = null;
+    render();
+  }
+
+  function renderReviewBar() {
+    var bar = $('reviewBar');
+    bar.classList.toggle('hidden', !G.review);
+    document.querySelector('.controls').classList.toggle('hidden', !!G.review);
+    if (!G.review) return;
+    $('revLabel').textContent = 'Move ' + G.review.ply + ' of ' + G.moves.length;
+    $('revStart').disabled = $('revPrev').disabled = G.review.ply === 0;
+    $('revEnd').disabled = $('revNext').disabled = G.review.ply === G.moves.length;
+  }
+
   // ---------------------------------------------------------------- moving
   function myTurn() {
+    if (G.review) return false;
     if (outcomeNow()) return false;
     if (G.mode === 'local') return true;
     if (G.mode === 'ai') return G.st.turn === G.humanSide && !G.busy;
@@ -276,6 +339,7 @@
 
   function doMove(mv) {
     G.log.push(J.moveText(G.st, mv));
+    G.moves.push(mv);
     G.last = { from: J.mFrom(mv), to: J.mTo(mv) };
     J.applyMove(G.st, mv);
     G.sel = -1; G.targets = []; G.hint = null;
@@ -294,6 +358,7 @@
     for (var s = 0; s < steps && G.st.undo.length > 0; s++) {
       J.undoMove(G.st);
       G.log.pop();
+      G.moves.pop();
     }
     G.sel = -1; G.targets = []; G.last = null; G.hint = null;
     render();
@@ -304,6 +369,7 @@
     G.st = J.newState(variant || G.variant);
     G.variant = G.st.variant;
     G.sel = -1; G.targets = []; G.last = null; G.log = []; G.hint = null;
+    G.moves = []; G.review = null; G.resignedBy = null;
     G.busy = false; G.desync = null;
     G.reqId++;      // any answer still in flight belongs to the old game
   }
@@ -444,9 +510,14 @@
         break;
       }
       G.log.push(J.moveText(G.st, mv));
+      G.moves.push(mv);
       G.last = { from: J.mFrom(mv), to: J.mTo(mv) };
       J.applyMove(G.st, mv);
     }
+
+    // Either player can wave off a draw; the other simply plays on.
+    if (s.waived && !G.st.allowRepeat) J.resumeAfterDraw(G.st);
+
     render();
   }
 
@@ -522,10 +593,36 @@
         room: G.online.room, seat: G.online.seat, token: G.online.token
       }).then(function (res) { if (res.state) syncOnline(res.state); }).catch(function () {});
     } else {
-      var loser = G.mode === 'ai' ? G.humanSide : G.st.turn;
-      G.st.winner = loser ^ 1;
+      G.resignedBy = G.mode === 'ai' ? G.humanSide : G.st.turn;
+      G.st.winner = G.resignedBy ^ 1;
       render();
     }
+  });
+
+  $('resumeBtn').addEventListener('click', function () {
+    if (G.mode === 'online') {
+      api('/api/waive', {
+        room: G.online.room, seat: G.online.seat, token: G.online.token
+      }).then(function (res) { if (res.state) syncOnline(res.state); }).catch(function () {});
+      return;
+    }
+    J.resumeAfterDraw(G.st);
+    render();
+    if (G.mode === 'ai' && G.st.turn !== G.humanSide) ask('move', G.level);
+  });
+
+  $('reviewBtn').addEventListener('click', function () { gotoPly(G.moves.length); });
+  $('revExit').addEventListener('click', exitReview);
+  $('revStart').addEventListener('click', function () { gotoPly(0); });
+  $('revPrev').addEventListener('click', function () { gotoPly(G.review.ply - 1); });
+  $('revNext').addEventListener('click', function () { gotoPly(G.review.ply + 1); });
+  $('revEnd').addEventListener('click', function () { gotoPly(G.moves.length); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!G.review) return;
+    if (e.key === 'ArrowLeft') gotoPly(G.review.ply - 1);
+    else if (e.key === 'ArrowRight') gotoPly(G.review.ply + 1);
+    else if (e.key === 'Escape') exitReview();
   });
 
   $('againBtn').addEventListener('click', function () {

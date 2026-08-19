@@ -55,6 +55,18 @@ genuinely disagree about, so all four common readings are selectable:
 | **Safe traps** | An animal on **any** trap cannot be eaten at all. Both dens end up sealed by untouchable blockers, so games run long - in self-play these lasted 2-3x a classic game. |
 | **Home refuge** | Your **own** traps shelter your animals; the enemy's traps still strip rank. The long, defensive game. |
 
+## Draws are only ever an offer
+
+A threefold repetition offers a draw; **Play on** waives it and the game
+continues, and it will not be offered again for that game. Online, either
+player can waive it and the other simply plays on. After that only a den, a
+wipeout, or a player with no legal move can end the game. There is no
+no-capture move limit at all.
+
+When a game is over, **Look back through the moves** replays it one move at a
+time (arrow keys work). The position is rebuilt from the move list rather than
+unwound from the live game, so reviewing can never disturb the real board.
+
 ## Online play
 
 - One player taps **Create a room** and gets a 4-letter code.

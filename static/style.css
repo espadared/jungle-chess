@@ -234,6 +234,17 @@ body {
 
 .controls { display: flex; gap: 6px; justify-content: center; margin: 10px 0 8px; flex-wrap: wrap; }
 
+.reviewbar {
+  display: flex; gap: 6px; align-items: center; justify-content: center;
+  flex-wrap: wrap; margin: 10px 0 4px;
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 7px 10px;
+}
+.reviewbar #revLabel { font-size: 13px; color: var(--dim); min-width: 108px; text-align: center; }
+.mini:disabled { opacity: .35; cursor: default; }
+
+.movelog span.mv.at { color: var(--gold); font-weight: 700; }
+
 .movelog {
   max-height: 74px; overflow-y: auto;
   background: var(--panel); border: 1px solid var(--line);

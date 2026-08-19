@@ -120,15 +120,26 @@
         <div class="overlay-emoji" id="overEmoji">🏆</div>
         <h2 id="overTitle">Red wins</h2>
         <p id="overText"></p>
+        <button class="primary" id="resumeBtn">Play on</button>
         <div class="overlay-btns">
           <button class="primary" id="againBtn">Play again</button>
           <button class="primary ghost" id="menuBtn">Menu</button>
         </div>
+        <button class="linkish" id="reviewBtn">Look back through the moves</button>
         <p id="rematchNote" class="hint hidden"></p>
       </div>
     </div>
   </div>
   <div class="captured" id="capturedBottom"></div>
+
+  <div class="reviewbar hidden" id="reviewBar">
+    <button class="mini" id="revStart" title="First move">&#124;&#9664;</button>
+    <button class="mini" id="revPrev" title="Step back">&#9664;</button>
+    <span id="revLabel">Move 0 of 0</span>
+    <button class="mini" id="revNext" title="Step forward">&#9654;</button>
+    <button class="mini" id="revEnd" title="Last move">&#9654;&#124;</button>
+    <button class="mini" id="revExit">Done</button>
+  </div>
 
   <div class="controls">
     <button class="mini" id="undoBtn">Undo</button>
@@ -190,9 +201,17 @@
     </ul>
 
     <h3>Draws</h3>
-    <p>The only draw is the same position coming up three times. There is no
-       move limit - a game with no captures for a long stretch simply carries
-       on, which matters most in the slower trap rules.</p>
+    <p>If the same position comes up three times the game offers a draw - but
+       it is only an offer. Press <b>Play on</b> and the game carries on, and
+       will not offer again. From then on it can only end by a den being taken,
+       every animal being captured, or someone having no legal move.</p>
+    <p>There is no move limit either: a long stretch with no captures simply
+       continues.</p>
+
+    <h3>Looking back</h3>
+    <p>When a game ends, <b>Look back through the moves</b> steps through it
+       one move at a time, so you can find where it went wrong. The arrow keys
+       work too. Nothing you do in there changes the game.</p>
   </div>
 </div>
 

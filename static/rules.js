@@ -100,6 +100,7 @@
       half: 0,           // plies since the last capture - bounds the repetition scan
       winner: -1,
       draw: null,
+      allowRepeat: false,   // set once the players have waived draws for this game
       hi: 0, lo: 0,
       keysHi: [], keysLo: [],
       undo: []
@@ -127,6 +128,7 @@
       half: st.half,
       winner: st.winner,
       draw: st.draw,
+      allowRepeat: st.allowRepeat,
       hi: st.hi, lo: st.lo,
       keysHi: st.keysHi.slice(),
       keysLo: st.keysLo.slice(),
@@ -261,7 +263,7 @@
 
     if (DEN[to] === (mover ^ 1)) st.winner = mover;            // walked into the den
     else if (!hasPieces(st, mover ^ 1)) st.winner = mover;      // wiped the board
-    else if (repetitions(st) >= 3) st.draw = 'repetition';
+    else if (!st.allowRepeat && repetitions(st) >= 3) st.draw = 'repetition';
     return st;
   }
 
@@ -277,6 +279,14 @@
     st.winner = u.winner;
     st.draw = u.draw;
     st.keysHi.pop(); st.keysLo.pop();
+    return st;
+  }
+
+  // Wave away the draw and keep playing. From here on only a den, a wipeout
+  // or a player with no moves left can finish this game.
+  function resumeAfterDraw(st) {
+    st.draw = null;
+    st.allowRepeat = true;
     return st;
   }
 
@@ -328,7 +338,7 @@
     newState: newState, clone: clone, rehash: rehash,
     mkMove: mkMove, mFrom: mFrom, mTo: mTo, mCap: mCap,
     genMoves: genMoves, movesFrom: movesFrom, canCapture: canCapture,
-    applyMove: applyMove, undoMove: undoMove,
+    applyMove: applyMove, undoMove: undoMove, resumeAfterDraw: resumeAfterDraw,
     outcome: outcome, hasPieces: hasPieces, repetitions: repetitions,
     coordName: coordName, moveText: moveText,
     boardToArray: boardToArray, stateFromArray: stateFromArray

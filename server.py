@@ -59,6 +59,7 @@ def make_room(variant):
         "rematch": [False, False],
         "wins": [0, 0],
         "resigned": None,       # seat that gave up, if any
+        "waived": False,        # someone chose to play on past a draw
         "version": 1,
         "created": now,
         "touched": now,
@@ -90,6 +91,7 @@ def view(room, seat):
         "wins": room["wins"],
         "rematch": room["rematch"],
         "resigned": room["resigned"],
+        "waived": room["waived"],
         "joined": room["joined"],
         "online": [
             room["joined"][i] and (now - room["seen"][i]) < OFFLINE_AFTER
@@ -178,6 +180,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/move": self.handle_move,
             "/api/rematch": self.handle_rematch,
             "/api/resign": self.handle_resign,
+            "/api/waive": self.handle_waive,
             "/api/leave": self.handle_leave,
         }
         handler = routes.get(urlparse(self.path).path)
@@ -285,6 +288,7 @@ class Handler(BaseHTTPRequestHandler):
             room["moves"] = []
             room["rematch"] = [False, False]
             room["resigned"] = None
+            room["waived"] = False
             room["round"] += 1
             room["colors"] = [room["colors"][0] ^ 1, room["colors"][1] ^ 1]
         bump(room)
@@ -296,6 +300,16 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"error": "No room with that code."}, 404)
             return
         room["resigned"] = seat
+        bump(room)
+        self.send_json({"ok": True, "state": view(room, seat)})
+
+    def handle_waive(self, body):
+        """Someone would rather keep playing than accept the draw."""
+        room, seat = self.seated(body)
+        if room is None or seat is None:
+            self.send_json({"error": "No room with that code."}, 404)
+            return
+        room["waived"] = True
         bump(room)
         self.send_json({"ok": True, "state": view(room, seat)})
 
