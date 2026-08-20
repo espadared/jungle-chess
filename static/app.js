@@ -22,8 +22,11 @@
   var lang = recall('jungle-lang', (navigator.language || '').indexOf('zh') === 0 ? 'zh' : 'en');
   if (!PACKS[lang]) lang = 'en';
 
-  var pieceStyle = recall('jungle-pieces', 'face');
-  if (!PIECE_SETS[pieceStyle]) pieceStyle = 'face';
+  // 'art' is the set drawn for this game - the only complete one, and the only
+  // one that looks the same on every device.
+  var STYLES = ['art', 'face', 'body', 'zh'];
+  var pieceStyle = recall('jungle-pieces', 'art');
+  if (STYLES.indexOf(pieceStyle) === -1) pieceStyle = 'art';
 
   // Look a phrase up, filling in {placeholders}.
   function T(key, vals) {
@@ -38,7 +41,20 @@
     return s;
   }
 
-  function glyph(rank) { return PIECE_SETS[pieceStyle][rank]; }
+  function glyph(rank) {
+    return pieceStyle === 'art' ? '' : PIECE_SETS[pieceStyle][rank];
+  }
+
+  // Markup for one piece. The drawn set needs an <svg>, the others are text -
+  // so every place a piece appears writes HTML rather than plain text.
+  function glyphHTML(rank, style, cls) {
+    style = style || pieceStyle;
+    if (style === 'art') {
+      return '<svg class="pc' + (cls ? ' ' + cls : '') + '" viewBox="0 0 64 64">' +
+             '<use href="#pc' + rank + '"/></svg>';
+    }
+    return PIECE_SETS[style][rank];
+  }
 
   var G = {
     mode: null,          // 'ai' | 'local' | 'online'
@@ -162,7 +178,7 @@
       else if (J.TRAP[i] !== -1) html += '<span class="mark">⚠️</span>';
       if (p !== 0) {
         var side = p > 0 ? 0 : 1, rank = p > 0 ? p : -p;
-        html += '<div class="piece r' + side + ' st-' + pieceStyle + '">' + glyph(rank) +
+        html += '<div class="piece r' + side + ' st-' + pieceStyle + '">' + glyphHTML(rank) +
                 '<span class="rk">' + rank + '</span></div>';
       }
       cell.innerHTML = html;
@@ -185,11 +201,11 @@
     var topSide = G.flip ? 0 : 1;
     function lost(side) {
       var out = '';
-      for (var r = 8; r >= 1; r--) if (!alive[side][r]) out += glyph(r);
+      for (var r = 8; r >= 1; r--) if (!alive[side][r]) out += glyphHTML(r, null, 'tiny');
       return out;
     }
-    $('capturedTop').textContent = lost(topSide);
-    $('capturedBottom').textContent = lost(1 - topSide);
+    $('capturedTop').innerHTML = lost(topSide);
+    $('capturedBottom').innerHTML = lost(1 - topSide);
   }
 
   function sideName(s) { return T(s === 0 ? 'side.red' : 'side.black'); }
@@ -212,7 +228,8 @@
 
     if (G.review) {
       $('statusLine').textContent = T('review.title');
-      $('subLine').textContent = G.review.ply === 0 ? T('review.opening')
+      // logText can contain an <svg>, so this one has to be HTML
+      $('subLine').innerHTML = G.review.ply === 0 ? T('review.opening')
         : T('review.after', { move: logText(G.log[G.review.ply - 1]) });
       return;
     }
@@ -263,9 +280,9 @@
 
   function logText(e) {
     if (!e) return '';
-    var s = glyph(e.rank) + ' ' + J.coordName(e.from) +
+    var s = glyphHTML(e.rank, null, 'tiny') + ' ' + J.coordName(e.from) +
             (e.cap ? '×' : '-') + J.coordName(e.to);
-    if (e.cap) s += ' ' + glyph(e.cap);
+    if (e.cap) s += ' ' + glyphHTML(e.cap, null, 'tiny');
     return s;
   }
 
@@ -726,9 +743,10 @@
   function rankLine(withNames) {
     var out = [];
     for (var r = 8; r >= 1; r--) {
-      out.push(glyph(r) + ' ' + r + (withNames ? ' ' + T('piece.' + r) : ''));
+      out.push(glyphHTML(r, null, 'tiny') + ' ' + r +
+               (withNames ? ' ' + T('piece.' + r) : ''));
     }
-    return out.join(' > ');
+    return out.join(' &gt; ');
   }
 
   function applyLanguage() {
@@ -755,13 +773,16 @@
   }
 
   function applyPieceStyle() {
-    $('brandIcons').textContent = PIECE_SETS[pieceStyle].slice(1).reverse().join(' ');
-    $('rankLine').textContent =
+    var brand = '';
+    for (var b = 8; b >= 1; b--) brand += glyphHTML(b, null, 'tiny');
+    $('brandIcons').innerHTML = brand;
+
+    $('rankLine').innerHTML =
       T('menu.ranksLead') + ' ' + rankLine(false) + ' ' + T('menu.ranksTail');
     var modalRanks = $('rankLineModal');
-    if (modalRanks) modalRanks.textContent = rankLine(true);
+    if (modalRanks) modalRanks.innerHTML = rankLine(true);
 
-    $('styleBtn').textContent = PIECE_SETS[pieceStyle][6];   // the tiger, as a sample
+    $('styleBtn').innerHTML = glyphHTML(6, null, 'tiny');    // the tiger, as a sample
     document.querySelectorAll('#styleChoices .style').forEach(function (b) {
       b.classList.toggle('selected', b.dataset.style === pieceStyle);
     });
@@ -769,11 +790,12 @@
     // is the same in both emoji sets - it saves explaining it twice.
     document.querySelectorAll('[data-style-preview]').forEach(function (el) {
       var which = el.dataset.stylePreview;
-      var set = PIECE_SETS[which];
       var html = '';
       for (var r = 8; r >= 1; r--) {
-        var stuck = which !== 'zh' && STUCK.indexOf(r) !== -1;
-        html += '<span class="pv-one' + (stuck ? ' stuck' : '') + '">' + set[r] + '</span>';
+        // only the two emoji sets have animals they cannot draw properly
+        var stuck = (which === 'face' || which === 'body') && STUCK.indexOf(r) !== -1;
+        html += '<span class="pv-one' + (stuck ? ' stuck' : '') + '">' +
+                glyphHTML(r, which, 'tiny') + '</span>';
       }
       el.innerHTML = html;
       el.className = 'style-preview pv-' + which;
@@ -788,7 +810,7 @@
   }
 
   function setPieceStyle(next) {
-    pieceStyle = PIECE_SETS[next] ? next : 'face';
+    pieceStyle = STYLES.indexOf(next) !== -1 ? next : 'art';
     remember('jungle-pieces', pieceStyle);
     applyPieceStyle();
   }
@@ -803,8 +825,7 @@
 
   // Mid-game cycling, for when two animals still look alike on the board.
   $('styleBtn').addEventListener('click', function () {
-    var order = ['face', 'body', 'zh'];
-    setPieceStyle(order[(order.indexOf(pieceStyle) + 1) % order.length]);
+    setPieceStyle(STYLES[(STYLES.indexOf(pieceStyle) + 1) % STYLES.length]);
   });
 
   // ---------------------------------------------------------------- boot

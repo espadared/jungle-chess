@@ -225,6 +225,15 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,.45);
   pointer-events: none; position: relative;
 }
+/* Pieces drawn for this game: white animal, ink detail, identical everywhere. */
+svg.pc { display: block; width: 100%; height: 100%; }
+.piece svg.pc { width: 80%; height: 80%; }
+/* inline in the move log, captured row, rank line and previews */
+svg.pc.tiny {
+  display: inline-block; width: 1.15em; height: 1.15em;
+  vertical-align: -0.25em;
+}
+
 /* Characters instead of animals - how the game reads on a real board. */
 .piece.st-zh {
   color: #fff; font-weight: 800;

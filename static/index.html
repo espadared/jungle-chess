@@ -16,6 +16,96 @@
 </head>
 <body>
 
+<!-- Pieces drawn for this game. Emoji cannot give a complete head set and looks
+     different on every device; these are identical everywhere and stay sharp at
+     any size. Paint is set with presentation attributes rather than CSS classes
+     because a stylesheet cannot reach inside a <use> shadow tree. -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="pc1" viewBox="0 0 64 64"><!-- rat: big round ears, tapered snout -->
+    <circle fill="#fff" cx="14" cy="19" r="11.5"/><circle fill="#fff" cx="50" cy="19" r="11.5"/>
+    <circle fill="#22303a" cx="14" cy="19" r="5.5"/><circle fill="#22303a" cx="50" cy="19" r="5.5"/>
+    <ellipse fill="#fff" cx="32" cy="35" rx="17" ry="16"/>
+    <ellipse fill="#fff" cx="32" cy="49" rx="8.5" ry="8"/>
+    <circle fill="#22303a" cx="25" cy="33" r="3.2"/><circle fill="#22303a" cx="39" cy="33" r="3.2"/>
+    <ellipse fill="#22303a" cx="32" cy="50" rx="4.2" ry="3.2"/>
+  </symbol>
+  <symbol id="pc2" viewBox="0 0 64 64"><!-- cat: pointed ears, whiskers -->
+    <path fill="#fff" d="M13 30 L15 7 L33 20 Z"/><path fill="#fff" d="M51 30 L49 7 L31 20 Z"/>
+    <path fill="#22303a" d="M18 25 L19 14 L27 21 Z"/><path fill="#22303a" d="M46 25 L45 14 L37 21 Z"/>
+    <ellipse fill="#fff" cx="32" cy="36" rx="19.5" ry="17.5"/>
+    <circle fill="#22303a" cx="24" cy="33" r="3.4"/><circle fill="#22303a" cx="40" cy="33" r="3.4"/>
+    <path fill="#22303a" d="M32 41 l4.5 4 -4.5 3.5 -4.5 -3.5 Z"/>
+    <rect fill="#22303a" x="12" y="41" width="10" height="2.4" rx="1.2" transform="rotate(-9 17 42)"/>
+    <rect fill="#22303a" x="12" y="47" width="10" height="2.4" rx="1.2" transform="rotate(7 17 48)"/>
+    <rect fill="#22303a" x="42" y="41" width="10" height="2.4" rx="1.2" transform="rotate(9 47 42)"/>
+    <rect fill="#22303a" x="42" y="47" width="10" height="2.4" rx="1.2" transform="rotate(-7 47 48)"/>
+  </symbol>
+  <symbol id="pc3" viewBox="0 0 64 64"><!-- dog: floppy ears, broad muzzle -->
+    <ellipse fill="#fff" cx="11" cy="35" rx="8" ry="16"/><ellipse fill="#fff" cx="53" cy="35" rx="8" ry="16"/>
+    <ellipse fill="#22303a" cx="11" cy="36" rx="3.6" ry="9"/><ellipse fill="#22303a" cx="53" cy="36" rx="3.6" ry="9"/>
+    <ellipse fill="#fff" cx="32" cy="33" rx="18" ry="17"/>
+    <ellipse fill="#fff" cx="32" cy="47" rx="12" ry="10"/>
+    <circle fill="#22303a" cx="25" cy="30" r="3.4"/><circle fill="#22303a" cx="39" cy="30" r="3.4"/>
+    <ellipse fill="#22303a" cx="32" cy="43" rx="5" ry="3.8"/>
+    <rect fill="#22303a" x="30.7" y="46" width="2.6" height="8" rx="1.3"/>
+  </symbol>
+  <symbol id="pc4" viewBox="0 0 64 64"><!-- wolf: tall pointed ears, angular muzzle -->
+    <path fill="#fff" d="M9 28 L14 2 L31 18 Z"/><path fill="#fff" d="M55 28 L50 2 L33 18 Z"/>
+    <path fill="#22303a" d="M15 24 L17 10 L25 19 Z"/><path fill="#22303a" d="M49 24 L47 10 L39 19 Z"/>
+    <path fill="#fff" d="M32 15 L52 25 L46 44 L32 58 L18 44 L12 25 Z"/>
+    <path fill="#22303a" d="M20 32 L28 30 L27 35 Z"/><path fill="#22303a" d="M44 32 L36 30 L37 35 Z"/>
+    <path fill="#22303a" d="M32 42 l5 4.5 -5 4 -5 -4 Z"/>
+  </symbol>
+  <symbol id="pc5" viewBox="0 0 64 64"><!-- leopard: rounded ears, spots -->
+    <circle fill="#fff" cx="15" cy="16" r="8"/><circle fill="#fff" cx="49" cy="16" r="8"/>
+    <circle fill="#22303a" cx="15" cy="16" r="3.6"/><circle fill="#22303a" cx="49" cy="16" r="3.6"/>
+    <ellipse fill="#fff" cx="32" cy="36" rx="19.5" ry="18"/>
+    <circle fill="#22303a" cx="17" cy="30" r="2.9"/><circle fill="#22303a" cx="20" cy="41" r="2.9"/>
+    <circle fill="#22303a" cx="47" cy="30" r="2.9"/><circle fill="#22303a" cx="44" cy="41" r="2.9"/>
+    <circle fill="#22303a" cx="32" cy="23" r="2.9"/><circle fill="#22303a" cx="24" cy="49" r="2.6"/>
+    <circle fill="#22303a" cx="40" cy="49" r="2.6"/>
+    <circle fill="#22303a" cx="25" cy="34" r="3.4"/><circle fill="#22303a" cx="39" cy="34" r="3.4"/>
+    <path fill="#22303a" d="M32 42 l4.5 4 -4.5 3.5 -4.5 -3.5 Z"/>
+  </symbol>
+  <symbol id="pc6" viewBox="0 0 64 64"><!-- tiger: rounded ears, bold stripes -->
+    <circle fill="#fff" cx="14" cy="17" r="8.5"/><circle fill="#fff" cx="50" cy="17" r="8.5"/>
+    <circle fill="#22303a" cx="14" cy="17" r="4"/><circle fill="#22303a" cx="50" cy="17" r="4"/>
+    <ellipse fill="#fff" cx="32" cy="36" rx="20" ry="18.5"/>
+    <rect fill="#22303a" x="30.5" y="18" width="3" height="11" rx="1.5"/>
+    <rect fill="#22303a" x="22" y="20" width="3" height="9" rx="1.5" transform="rotate(-14 23.5 24)"/>
+    <rect fill="#22303a" x="39" y="20" width="3" height="9" rx="1.5" transform="rotate(14 40.5 24)"/>
+    <rect fill="#22303a" x="13" y="34" width="9" height="3" rx="1.5"/>
+    <rect fill="#22303a" x="13" y="42" width="9" height="3" rx="1.5"/>
+    <rect fill="#22303a" x="42" y="34" width="9" height="3" rx="1.5"/>
+    <rect fill="#22303a" x="42" y="42" width="9" height="3" rx="1.5"/>
+    <circle fill="#22303a" cx="25" cy="35" r="3.4"/><circle fill="#22303a" cx="39" cy="35" r="3.4"/>
+    <path fill="#22303a" d="M32 43 l4.5 4 -4.5 3.5 -4.5 -3.5 Z"/>
+  </symbol>
+  <symbol id="pc7" viewBox="0 0 64 64"><!-- lion: full mane ring -->
+    <g fill="#fff">
+      <circle cx="32" cy="9" r="9.5"/><circle cx="48.3" cy="15.7" r="9.5"/>
+      <circle cx="55" cy="32" r="9.5"/><circle cx="48.3" cy="48.3" r="9.5"/>
+      <circle cx="32" cy="55" r="9.5"/><circle cx="15.7" cy="48.3" r="9.5"/>
+      <circle cx="9" cy="32" r="9.5"/><circle cx="15.7" cy="15.7" r="9.5"/>
+      <circle cx="32" cy="32" r="24"/>
+    </g>
+    <circle fill="#22303a" cx="32" cy="33" r="18.5"/>
+    <circle fill="#fff" cx="32" cy="33" r="16.5"/>
+    <circle fill="#22303a" cx="25.5" cy="30" r="3.1"/><circle fill="#22303a" cx="38.5" cy="30" r="3.1"/>
+    <path fill="#22303a" d="M32 37.5 l4.2 3.6 -4.2 3.2 -4.2 -3.2 Z"/>
+    <path fill="none" stroke="#22303a" stroke-width="2.2" stroke-linecap="round" d="M32 44.5 q0 4 -4.5 4.5"/><path fill="none" stroke="#22303a" stroke-width="2.2" stroke-linecap="round" d="M32 44.5 q0 4 4.5 4.5"/>
+  </symbol>
+  <symbol id="pc8" viewBox="0 0 64 64"><!-- elephant: big ears, trunk, tusks -->
+    <ellipse fill="#fff" cx="10.5" cy="28" rx="12.5" ry="18"/><ellipse fill="#fff" cx="53.5" cy="28" rx="12.5" ry="18"/>
+    <ellipse fill="#22303a" cx="10.5" cy="29" rx="6" ry="10.5"/><ellipse fill="#22303a" cx="53.5" cy="29" rx="6" ry="10.5"/>
+    <ellipse fill="#fff" cx="32" cy="27" rx="15" ry="16"/>
+    <path fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" d="M32 36 C32 46 28 50 30.5 57"/>
+    <path fill="#fff" d="M21.5 40 q-4 8 -0.5 12.5 q1.5 -7 4.5 -9.5 Z"/>
+    <path fill="#fff" d="M42.5 40 q4 8 0.5 12.5 q-1.5 -7 -4.5 -9.5 Z"/>
+    <circle fill="#22303a" cx="24.5" cy="24" r="3"/><circle fill="#22303a" cx="39.5" cy="24" r="3"/>
+  </symbol>
+</svg>
+
 <!-- ============================ MENU ============================ -->
 <section id="menu" class="screen">
   <button class="langbtn" id="langBtn" data-t="lang.button">中文</button>
@@ -103,6 +193,10 @@
   <div class="card">
     <h2 data-t="menu.pieces">3. Choose the piece markings</h2>
     <div class="styles" id="styleChoices">
+      <button class="style" data-style="art">
+        <span class="style-name" data-t="style.art">Drawn for this game</span>
+        <span class="style-preview" data-style-preview="art"></span>
+      </button>
       <button class="style" data-style="face">
         <span class="style-name" data-t="style.face">Animal heads</span>
         <span class="style-preview" data-style-preview="face"></span>

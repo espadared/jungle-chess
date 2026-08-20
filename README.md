@@ -107,9 +107,19 @@ board controls:
 
 | Set | Marking |
 |-----|---------|
-| `face` (default) | 🐭 🐱 🐶 🐺 🐆 🐯 🦁 🐘 |
+| `art` (default) | drawn for this game, as an SVG sprite in `index.html` |
+| `face` | 🐭 🐱 🐶 🐺 🐆 🐯 🦁 🐘 |
 | `body` | 🐀 🐈 🐕 🐺 🐆 🐅 🦁 🐘 |
 | `zh` | 鼠 猫 狗 狼 豹 虎 狮 象 |
+
+`art` is the reason the other two can stay imperfect: eight heads in one style,
+drawn as `<symbol>`s in the page and used via `<use href="#pcN">`. It is the
+only complete set, and unlike emoji it looks identical on every device rather
+than being redrawn by Apple, Google and Microsoft.
+
+Paint is set with **presentation attributes on the shapes**, not CSS classes -
+a stylesheet cannot cross the shadow boundary a `<use>` creates, so classes
+render everything in the fallback colour.
 
 **A head-only or body-only emoji set is impossible.** Scanning the whole emoji
 block turns up no lion body, no wolf body, no leopard face and no elephant

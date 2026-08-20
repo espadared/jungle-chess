@@ -46,11 +46,12 @@
     'chip.safe': 'Safe traps · variation 2',
     'chip.home': 'Home refuge · variation 2b',
 
-    'style.face': 'Animal heads',
-    'style.body': 'Full animals',
+    'style.art': 'Drawn for this game',
+    'style.face': 'Emoji heads',
+    'style.body': 'Emoji animals',
     'style.zh': 'Chinese characters',
-    'style.note': 'Heads are the easiest to tell apart. Full animals make the tiger and leopard look very alike.',
-    'style.stuck': 'Emoji has no lion or wolf body, and no leopard or elephant face — so those four (marked ·) are the same picture in both sets. Only the characters are a complete set, and they are what a real board uses.',
+    'style.note': 'The drawn set is a proper set of eight heads — stripes for the tiger, spots for the leopard — and looks the same on every phone. Emoji does not.',
+    'style.stuck': 'Emoji has no lion or wolf body, and no leopard or elephant face — so those four (marked ·) are the same picture in both emoji sets, and emoji is drawn differently on iPhone, Android and Windows.',
 
     'ai.title': '🤖 Play the computer',
     'level.easy': 'Easy',
@@ -207,11 +208,12 @@
     'chip.safe': '安全陷阱 · 变体二',
     'chip.home': '自家庇护 · 变体二B',
 
-    'style.face': '动物头像',
-    'style.body': '动物全身',
+    'style.art': '本游戏专属图案',
+    'style.face': '表情头像',
+    'style.body': '表情全身',
     'style.zh': '汉字',
-    'style.note': '头像最容易分辨。全身图里的老虎和豹子长得很像。',
-    'style.stuck': '表情符号里没有狮和狼的全身图，也没有豹和象的头像——所以这四个（标了 · 的）在两套图案里是同一张图。只有汉字是完整的一套，也是真实棋盘上的写法。',
+    'style.note': '专属图案是完整的八个头像——老虎有条纹，豹子有斑点——而且在每台手机上长得一模一样。表情符号做不到。',
+    'style.stuck': '表情符号里没有狮和狼的全身图，也没有豹和象的头像——所以这四个（标了 · 的）在两套表情里是同一张图；而且表情在 iPhone、安卓和 Windows 上画法各不相同。',
 
     'ai.title': '🤖 与电脑对战',
     'level.easy': '简单',
