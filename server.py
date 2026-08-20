@@ -158,6 +158,10 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         if path == "/api/state":
             self.handle_state(parse_qs(parsed.query))
+        elif path == "/sw.js":
+            # The service worker has to be served from the root or it is only
+            # allowed to look after /static/.
+            self.send_file(STATIC / "sw.js")
         elif path == "/api/health":
             self.send_json({"ok": True, "rooms": len(ROOMS)})
         elif path.startswith("/static/"):

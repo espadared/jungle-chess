@@ -94,6 +94,32 @@ Moves are relayed, not refereed: both browsers run the identical rulebook and
 each one checks every move it receives, so an out-of-order or impossible move
 is caught and reported rather than silently accepted.
 
+## Installing it on a phone
+
+The game is a PWA, so it can be added to a home screen and run like an app.
+
+- **Android / Chrome** - an "Add to home screen" card appears on the menu when
+  the browser offers the install prompt.
+- **iPhone / Safari** - no prompt exists, so the same card explains the Share →
+  Add to Home Screen route instead.
+
+`static/sw.js` caches the whole shell, so an installed copy **opens instantly
+and plays the computer with no connection at all** - the rules and the AI were
+always running on the device. It also means a cold Render instance no longer
+blocks the launch: the stored page renders while the server wakes up.
+
+Two things the service worker deliberately never touches:
+
+- anything under `/api/` - rooms are live, and the long poll must never be
+  answered from a cache
+- cross-origin requests
+
+Bump `CACHE` in `static/sw.js` whenever a shell file changes, or installed
+copies will keep serving the old version until their background refresh lands.
+
+Icons live in `static/icons/`, generated at 192, 512, a padded 512 maskable,
+and a 180 Apple touch icon.
+
 ## Deploying to Render
 
 Push this folder to GitHub, then on Render create a **Web Service** pointing at

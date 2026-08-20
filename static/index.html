@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#123024">
 <title>Jungle - Animal Chess</title>
+<link rel="manifest" href="/static/manifest.json">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jungle">
 <link rel="stylesheet" href="/static/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='52' font-size='52'>🐅</text></svg>">
 </head>
@@ -87,6 +93,14 @@
       </div>
       <p class="hint">Create a room, then send your friend the link. Works on phones.</p>
     </div>
+  </div>
+
+  <div class="card hidden" id="installCard">
+    <h2>Keep it on your phone</h2>
+    <p class="hint" id="installHint">Install Jungle and it opens like a normal
+       app - no browser bars, and the computer opponent works with no internet
+       at all.</p>
+    <button class="primary" id="installBtn">Add to home screen</button>
   </div>
 
   <button class="linkish" id="openRules">How to play &amp; full rules</button>

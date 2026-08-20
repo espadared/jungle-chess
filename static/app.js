@@ -690,5 +690,51 @@
     joinRoom(invited);
   }
 
+  // ------------------------------------------------- installing on a phone
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {
+        // No offline copy then - the game still works online.
+      });
+    });
+  }
+
+  var installPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    installPrompt = e;
+    $('installCard').classList.remove('hidden');
+  });
+
+  $('installBtn').addEventListener('click', function () {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    installPrompt.userChoice.then(function () {
+      installPrompt = null;
+      $('installCard').classList.add('hidden');
+    });
+  });
+
+  window.addEventListener('appinstalled', function () {
+    $('installCard').classList.add('hidden');
+  });
+
+  // Safari on the iPhone has no install prompt, so say where the button is.
+  (function () {
+    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var installed = navigator.standalone === true ||
+                    window.matchMedia('(display-mode: standalone)').matches;
+    if (iOS && !installed) {
+      $('installCard').classList.remove('hidden');
+      $('installBtn').classList.add('hidden');
+      $('installHint').innerHTML =
+        'Tap <b>Share</b> at the bottom of Safari, then <b>Add to Home Screen</b>. ' +
+        'Jungle then opens like a normal app, and the computer opponent works ' +
+        'with no internet at all.';
+    }
+  })();
+
   window.JungleUI = G;   // handy for poking at from the console
 })();
