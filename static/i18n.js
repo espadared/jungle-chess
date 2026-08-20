@@ -5,14 +5,19 @@
 (function (root) {
   'use strict';
 
-  // Emoji has no lion or wolf body, and no leopard or elephant face, so each
-  // set is "as close as the pictures allow". The character set has no such
-  // gaps, which is why it is the clearest of the three.
+  // Checked against the whole emoji block: there is no lion body, no wolf
+  // body, no leopard face and no elephant face anywhere in Unicode. So those
+  // four animals are stuck with their single available picture and look the
+  // same in both picture sets - it cannot be fixed, only stated plainly.
+  // MARKED lists them so the picker can show which ones do not change.
   var PIECE_SETS = {
     face: ['', '🐭', '🐱', '🐶', '🐺', '🐆', '🐯', '🦁', '🐘'],
-    body: ['', '🐁', '🐈', '🐕', '🐺', '🐆', '🐅', '🦁', '🐘'],
+    body: ['', '🐀', '🐈', '🐕', '🐺', '🐆', '🐅', '🦁', '🐘'],
     zh:   ['', '鼠', '猫', '狗', '狼', '豹', '虎', '狮', '象']
   };
+
+  // ranks whose picture is identical in both emoji sets
+  var STUCK = [4, 5, 7, 8];   // wolf, leopard, lion, elephant
 
   var EN = {
     'lang.button': '中文',
@@ -41,10 +46,11 @@
     'chip.safe': 'Safe traps · variation 2',
     'chip.home': 'Home refuge · variation 2b',
 
-    'style.face': 'Faces',
+    'style.face': 'Animal heads',
     'style.body': 'Full animals',
     'style.zh': 'Chinese characters',
-    'style.note': 'Faces tell the tiger and leopard apart most easily. The characters are how the game is played on a real board.',
+    'style.note': 'Heads are the easiest to tell apart. Full animals make the tiger and leopard look very alike.',
+    'style.stuck': 'Emoji has no lion or wolf body, and no leopard or elephant face — so those four (marked ·) are the same picture in both sets. Only the characters are a complete set, and they are what a real board uses.',
 
     'ai.title': '🤖 Play the computer',
     'level.easy': 'Easy',
@@ -204,7 +210,8 @@
     'style.face': '动物头像',
     'style.body': '动物全身',
     'style.zh': '汉字',
-    'style.note': '头像最容易分清老虎和豹子。汉字则是真实棋盘上的写法。',
+    'style.note': '头像最容易分辨。全身图里的老虎和豹子长得很像。',
+    'style.stuck': '表情符号里没有狮和狼的全身图，也没有豹和象的头像——所以这四个（标了 · 的）在两套图案里是同一张图。只有汉字是完整的一套，也是真实棋盘上的写法。',
 
     'ai.title': '🤖 与电脑对战',
     'level.easy': '简单',
@@ -336,6 +343,7 @@
 
   root.JungleText = {
     PIECE_SETS: PIECE_SETS,
+    STUCK: STUCK,
     packs: { en: EN, zh: ZH }
   };
 })(typeof self !== 'undefined' ? self : this);

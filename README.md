@@ -108,12 +108,20 @@ board controls:
 | Set | Marking |
 |-----|---------|
 | `face` (default) | 🐭 🐱 🐶 🐺 🐆 🐯 🦁 🐘 |
-| `body` | 🐁 🐈 🐕 🐺 🐆 🐅 🦁 🐘 |
+| `body` | 🐀 🐈 🐕 🐺 🐆 🐅 🦁 🐘 |
 | `zh` | 鼠 猫 狗 狼 豹 虎 狮 象 |
 
-Emoji has no lion or wolf body and no leopard or elephant face, so the two
-picture sets overlap in places. Only the character set is completely
-unambiguous - and it is how the game is marked on a real board.
+**A head-only or body-only emoji set is impossible.** Scanning the whole emoji
+block turns up no lion body, no wolf body, no leopard face and no elephant
+face - `🦁 U+1F981 LION FACE` and `🐆 U+1F406 LEOPARD` are the only pictures
+that exist for those animals. So four ranks (wolf, leopard, lion, elephant,
+listed in `STUCK`) are the same picture in both sets. The picker draws all
+eight pieces per set and puts a dot under those four rather than quietly
+shipping a set that looks broken.
+
+That also means `body` genuinely cannot separate the tiger from the leopard -
+they are near-identical spotted/striped quadrupeds at board size. `zh` is the
+only complete, unambiguous set, and is what a real board uses.
 
 Both choices are kept in `localStorage`. The move log stores the bare facts of
 each move rather than rendered text, so switching language or markings rewrites

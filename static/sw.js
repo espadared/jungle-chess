@@ -13,7 +13,7 @@
  * So: BUMP `CACHE` WHENEVER A SHELL FILE CHANGES. Nothing else triggers an
  * update, and installed copies will happily serve the old version forever.
  */
-var CACHE = 'jungle-v4';
+var CACHE = 'jungle-v5';
 
 var SHELL = [
   '/',

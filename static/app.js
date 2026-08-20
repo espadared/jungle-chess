@@ -10,6 +10,7 @@
   // ------------------------------------------------- language and markings
   var PACKS = window.JungleText.packs;
   var PIECE_SETS = window.JungleText.PIECE_SETS;
+  var STUCK = window.JungleText.STUCK;
 
   function remember(key, value) {
     try { localStorage.setItem(key, value); } catch (e) { /* private browsing */ }
@@ -764,10 +765,18 @@
     document.querySelectorAll('#styleChoices .style').forEach(function (b) {
       b.classList.toggle('selected', b.dataset.style === pieceStyle);
     });
+    // Show all eight, high rank first, with a dot under the four whose picture
+    // is the same in both emoji sets - it saves explaining it twice.
     document.querySelectorAll('[data-style-preview]').forEach(function (el) {
-      var set = PIECE_SETS[el.dataset.stylePreview];
-      el.textContent = [set[8], set[7], set[6], set[5]].join(' ');
-      el.className = 'style-preview pv-' + el.dataset.stylePreview;
+      var which = el.dataset.stylePreview;
+      var set = PIECE_SETS[which];
+      var html = '';
+      for (var r = 8; r >= 1; r--) {
+        var stuck = which !== 'zh' && STUCK.indexOf(r) !== -1;
+        html += '<span class="pv-one' + (stuck ? ' stuck' : '') + '">' + set[r] + '</span>';
+      }
+      el.innerHTML = html;
+      el.className = 'style-preview pv-' + which;
     });
     if (G.st) render();
   }
