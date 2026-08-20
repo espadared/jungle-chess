@@ -810,6 +810,16 @@
 
   // ------------------------------------------------- installing on a phone
   if ('serviceWorker' in navigator) {
+    // If a copy was already installed, this page was served from the old
+    // stored version. When the new worker takes over, reload once so nobody
+    // has to open the app twice to see an update.
+    var hadWorker = !!navigator.serviceWorker.controller;
+    var reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (!hadWorker || reloading) return;
+      reloading = true;
+      location.reload();
+    });
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('/sw.js').catch(function () {
         // No offline copy then - the game still works online.

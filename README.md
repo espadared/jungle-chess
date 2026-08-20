@@ -139,8 +139,14 @@ Two things the service worker deliberately never touches:
   answered from a cache
 - cross-origin requests
 
-Bump `CACHE` in `static/sw.js` whenever a shell file changes, or installed
-copies will keep serving the old version until their background refresh lands.
+Bump `CACHE` in `static/sw.js` whenever a shell file changes - nothing else
+triggers an update, and installed copies will otherwise serve the old version
+forever.
+
+An update still means the *first* load after a deploy comes from the old stored
+copy. The page watches for the new worker taking control and reloads itself
+once when that happens, so it corrects within a second instead of needing the
+app to be opened twice.
 
 Icons live in `static/icons/`, generated at 192, 512, a padded 512 maskable,
 and a 180 Apple touch icon.
