@@ -18,112 +18,134 @@
 
 <!-- ============================ MENU ============================ -->
 <section id="menu" class="screen">
+  <button class="langbtn" id="langBtn" data-t="lang.button">中文</button>
+
   <header class="brand">
-    <div class="brand-icons">🐘 🦁 🐅 🐆 🐺 🐕 🐈 🐁</div>
-    <h1>Jungle</h1>
-    <p class="tag">Animal chess &middot; free to play &middot; no sign-up</p>
+    <div class="brand-icons" id="brandIcons"></div>
+    <h1 id="brandTitle">Jungle</h1>
+    <p class="tag" data-t="menu.tag">Animal chess &middot; free to play &middot; no sign-up</p>
   </header>
 
   <div class="card">
-    <h2>1. Choose the trap rule</h2>
+    <h2 data-t="menu.trapRule">1. Choose the trap rule</h2>
     <div class="choices" id="variantChoices">
       <label class="choice">
         <input type="radio" name="variant" value="classic" checked>
         <span class="choice-body">
-          <b>Classic</b>
-          <em>The standard game. An animal standing in the <u>enemy's</u> trap loses all rank, so anything can eat it.</em>
+          <b><span data-t="variant.classic">Classic</span></b>
+          <em data-th="variant.classic.desc"></em>
         </span>
       </label>
       <label class="choice">
         <input type="radio" name="variant" value="open">
         <span class="choice-body">
-          <b>Open traps <span class="badge">Variation 1</span></b>
-          <em>An animal on <u>any</u> trap - yours or theirs - can be eaten by any piece. Your own back yard is dangerous too.</em>
+          <b><span data-t="variant.open">Open traps</span>
+             <span class="badge" data-t="variant.badge1">Variation 1</span></b>
+          <em data-th="variant.open.desc"></em>
         </span>
       </label>
       <label class="choice">
         <input type="radio" name="variant" value="safe">
         <span class="choice-body">
-          <b>Safe traps <span class="badge">Variation 2</span></b>
-          <em>An animal on <u>any</u> trap cannot be eaten at all. Long, tense games: park animals on your own three traps and they cannot be touched or pushed aside, sealing your den - but leave one open and an enemy who lands there is untouchable too.</em>
+          <b><span data-t="variant.safe">Safe traps</span>
+             <span class="badge" data-t="variant.badge2">Variation 2</span></b>
+          <em data-th="variant.safe.desc"></em>
         </span>
       </label>
       <label class="choice">
         <input type="radio" name="variant" value="home">
         <span class="choice-body">
-          <b>Home refuge <span class="badge">Variation 2b</span></b>
-          <em>Your <u>own</u> traps shelter your animals; the enemy's traps still strip rank. The long, defensive version of variation 2.</em>
+          <b><span data-t="variant.home">Home refuge</span>
+             <span class="badge" data-t="variant.badge2b">Variation 2b</span></b>
+          <em data-th="variant.home.desc"></em>
         </span>
       </label>
     </div>
   </div>
 
   <div class="card">
-    <h2>2. Choose your opponent</h2>
+    <h2 data-t="menu.opponent">2. Choose your opponent</h2>
 
     <div class="mode-block">
-      <h3>🤖 Play the computer</h3>
+      <h3 data-t="ai.title">🤖 Play the computer</h3>
       <div class="levels" id="levelChoices">
-        <button class="level" data-level="easy">Easy</button>
-        <button class="level" data-level="normal">Normal</button>
-        <button class="level selected" data-level="hard">Hard</button>
-        <button class="level" data-level="insane">Insane</button>
+        <button class="level" data-level="easy" data-t="level.easy">Easy</button>
+        <button class="level" data-level="normal" data-t="level.normal">Normal</button>
+        <button class="level selected" data-level="hard" data-t="level.hard">Hard</button>
+        <button class="level" data-level="insane" data-t="level.insane">Insane</button>
       </div>
-      <p class="hint" id="levelHint">Hard: thinks about 2.5 seconds a move and looks a long way ahead.</p>
+      <p class="hint" id="levelHint"></p>
       <div class="side-pick">
-        <span>Play as</span>
-        <button class="pill selected" data-side="0">🔴 Red (moves first)</button>
-        <button class="pill" data-side="1">⚫ Black</button>
+        <span data-t="menu.playAs">Play as</span>
+        <button class="pill selected" data-side="0" data-t="menu.red">🔴 Red (moves first)</button>
+        <button class="pill" data-side="1" data-t="menu.black">⚫ Black</button>
       </div>
-      <button class="primary" id="startAI">Start game</button>
+      <button class="primary" id="startAI" data-t="menu.start">Start game</button>
     </div>
 
     <div class="mode-block">
-      <h3>👥 Two players, one device</h3>
-      <button class="primary ghost" id="startLocal">Pass and play</button>
+      <h3 data-t="local.title">👥 Two players, one device</h3>
+      <button class="primary ghost" id="startLocal" data-t="local.start">Pass and play</button>
     </div>
 
     <div class="mode-block">
-      <h3>🌍 Play a friend online</h3>
-      <button class="primary" id="createRoom">Create a room</button>
+      <h3 data-t="online.title">🌍 Play a friend online</h3>
+      <button class="primary" id="createRoom" data-t="online.create">Create a room</button>
       <div class="joinrow">
-        <input id="joinCode" maxlength="4" placeholder="CODE" autocomplete="off"
-               autocapitalize="characters" spellcheck="false">
-        <button class="primary ghost" id="joinRoom">Join</button>
+        <input id="joinCode" maxlength="4" data-tph="online.code" placeholder="CODE"
+               autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button class="primary ghost" id="joinRoom" data-t="online.join">Join</button>
       </div>
-      <p class="hint">Create a room, then send your friend the link. Works on phones.</p>
+      <p class="hint" data-t="online.hint"></p>
     </div>
+  </div>
+
+  <div class="card">
+    <h2 data-t="menu.pieces">3. Choose the piece markings</h2>
+    <div class="styles" id="styleChoices">
+      <button class="style" data-style="face">
+        <span class="style-preview" data-style-preview="face"></span>
+        <span class="style-name" data-t="style.face">Faces</span>
+      </button>
+      <button class="style" data-style="body">
+        <span class="style-preview" data-style-preview="body"></span>
+        <span class="style-name" data-t="style.body">Full animals</span>
+      </button>
+      <button class="style" data-style="zh">
+        <span class="style-preview" data-style-preview="zh"></span>
+        <span class="style-name" data-t="style.zh">Chinese characters</span>
+      </button>
+    </div>
+    <p class="hint" data-t="style.note"></p>
   </div>
 
   <div class="card hidden" id="installCard">
-    <h2>Keep it on your phone</h2>
-    <p class="hint" id="installHint">Install Jungle and it opens like a normal
-       app - no browser bars, and the computer opponent works with no internet
-       at all.</p>
-    <button class="primary" id="installBtn">Add to home screen</button>
+    <h2 data-t="install.title">Keep it on your phone</h2>
+    <p class="hint" id="installHint" data-th="install.hint"></p>
+    <button class="primary" id="installBtn" data-t="install.button">Add to home screen</button>
   </div>
 
-  <button class="linkish" id="openRules">How to play &amp; full rules</button>
-  <p class="foot">Ranks: 🐘 8 &gt; 🦁 7 &gt; 🐅 6 &gt; 🐆 5 &gt; 🐺 4 &gt; 🐕 3 &gt; 🐈 2 &gt; 🐁 1 &mdash; and the rat beats the elephant.</p>
+  <button class="linkish" id="openRules" data-t="menu.rulesLink">How to play &amp; full rules</button>
+  <p class="foot" id="rankLine"></p>
 </section>
 
 <!-- ============================ GAME ============================ -->
 <section id="game" class="screen hidden">
   <div class="topbar">
-    <button class="icon" id="back" title="Back to menu">‹</button>
+    <button class="icon" id="back" data-ttl="game.back" title="Back to menu">‹</button>
     <div class="status">
-      <div id="statusLine">Red to move</div>
+      <div id="statusLine"></div>
       <div id="subLine" class="sub"></div>
     </div>
-    <button class="icon" id="flip" title="Flip the board">⇅</button>
+    <button class="icon" id="flip" data-ttl="game.flip" title="Flip the board">⇅</button>
   </div>
 
-  <button class="rulechip" id="ruleChip">Classic traps</button>
+  <button class="rulechip" id="ruleChip"></button>
 
   <div id="roomBar" class="roombar hidden">
-    <span class="code">Room <b id="roomCode">----</b></span>
-    <button class="mini" id="copyLink">Copy invite link</button>
-    <span id="oppState" class="oppstate">waiting…</span>
+    <span class="code"><span data-t="game.room">Room</span> <b id="roomCode">----</b></span>
+    <button class="mini" id="copyLink" data-t="game.copyLink">Copy invite link</button>
+    <span id="oppState" class="oppstate" data-t="game.waiting">waiting…</span>
   </div>
 
   <div class="captured" id="capturedTop"></div>
@@ -132,14 +154,14 @@
     <div class="overlay hidden" id="overlay">
       <div class="overlay-card">
         <div class="overlay-emoji" id="overEmoji">🏆</div>
-        <h2 id="overTitle">Red wins</h2>
+        <h2 id="overTitle"></h2>
         <p id="overText"></p>
-        <button class="primary" id="resumeBtn">Play on</button>
+        <button class="primary" id="resumeBtn" data-t="over.playOn">Play on</button>
         <div class="overlay-btns">
-          <button class="primary" id="againBtn">Play again</button>
-          <button class="primary ghost" id="menuBtn">Menu</button>
+          <button class="primary" id="againBtn" data-t="over.again">Play again</button>
+          <button class="primary ghost" id="menuBtn" data-t="over.menu">Menu</button>
         </div>
-        <button class="linkish" id="reviewBtn">Look back through the moves</button>
+        <button class="linkish" id="reviewBtn" data-t="over.review">Look back through the moves</button>
         <p id="rematchNote" class="hint hidden"></p>
       </div>
     </div>
@@ -147,19 +169,20 @@
   <div class="captured" id="capturedBottom"></div>
 
   <div class="reviewbar hidden" id="reviewBar">
-    <button class="mini" id="revStart" title="First move">&#124;&#9664;</button>
-    <button class="mini" id="revPrev" title="Step back">&#9664;</button>
-    <span id="revLabel">Move 0 of 0</span>
-    <button class="mini" id="revNext" title="Step forward">&#9654;</button>
-    <button class="mini" id="revEnd" title="Last move">&#9654;&#124;</button>
-    <button class="mini" id="revExit">Done</button>
+    <button class="mini" id="revStart" data-ttl="review.first">&#124;&#9664;</button>
+    <button class="mini" id="revPrev" data-ttl="review.prev">&#9664;</button>
+    <span id="revLabel"></span>
+    <button class="mini" id="revNext" data-ttl="review.next">&#9654;</button>
+    <button class="mini" id="revEnd" data-ttl="review.last">&#9654;&#124;</button>
+    <button class="mini" id="revExit" data-t="review.done">Done</button>
   </div>
 
   <div class="controls">
-    <button class="mini" id="undoBtn">Undo</button>
-    <button class="mini" id="hintBtn">Hint</button>
-    <button class="mini" id="rulesBtn">Rules</button>
-    <button class="mini danger" id="resignBtn">Resign</button>
+    <button class="mini" id="undoBtn" data-t="game.undo">Undo</button>
+    <button class="mini" id="hintBtn" data-t="game.hint">Hint</button>
+    <button class="mini" id="styleBtn">🐯</button>
+    <button class="mini" id="rulesBtn" data-t="game.rules">Rules</button>
+    <button class="mini danger" id="resignBtn" data-t="game.resign">Resign</button>
   </div>
 
   <div class="movelog" id="moveLog"></div>
@@ -169,71 +192,11 @@
 <div id="rulesModal" class="modal hidden">
   <div class="modal-card">
     <button class="close" id="closeRules">×</button>
-    <h2>How to play Jungle</h2>
-
-    <h3>The goal</h3>
-    <p>Win by moving any one of your animals into the opponent's <b>den</b> (the
-       square marked 🏠 at the far end), or by capturing every animal they have.
-       If a player has no legal move left, they lose.</p>
-
-    <h3>Moving</h3>
-    <p>Every animal moves one square up, down, left or right. Never diagonally.
-       You may never step into your own den.</p>
-
-    <h3>Eating</h3>
-    <p>An animal may eat an enemy animal of the <b>same or lower</b> rank:</p>
-    <p class="ranks">🐘 8 Elephant &gt; 🦁 7 Lion &gt; 🐅 6 Tiger &gt; 🐆 5 Leopard
-       &gt; 🐺 4 Wolf &gt; 🐕 3 Dog &gt; 🐈 2 Cat &gt; 🐁 1 Rat</p>
-    <p>The one twist: the <b>rat can eat the elephant</b> (it runs up the trunk),
-       but the elephant can never eat the rat.</p>
-
-    <h3>The river</h3>
-    <p>Only the <b>rat</b> may swim. A rat in the water cannot eat anything on
-       land, and nothing on land can reach it while it swims - but a rat in the
-       water can eat another rat in the water.</p>
-    <p>The <b>lion</b> and <b>tiger</b> can leap right over the river, straight
-       across or straight up and down, landing on the far bank and eating
-       whatever is there. They cannot leap if <i>any</i> rat, yours or theirs,
-       is sitting in the water they would cross.</p>
-
-    <h3>Traps ⚠</h3>
-    <p>Three squares around each den are traps. What they do depends on the rule
-       you picked in the menu:</p>
-    <ul>
-      <li><b>Classic</b> - an animal in the <u>enemy's</u> trap drops to rank 0,
-          so any enemy piece can eat it. Your own traps do nothing to you.</li>
-      <li><b>Open traps</b> - an animal on <u>any</u> trap, including its own,
-          can be eaten by anything.</li>
-      <li><b>Safe traps</b> - an animal on <u>any</u> trap cannot be eaten at
-          all. All three squares beside a den are traps, so an enemy who lands
-          on one is untouchable and walks in next move - but you can park your
-          own animals there first, where they are equally untouchable and block
-          the way. Games run long and turn on who claims those squares.</li>
-      <li><b>Home refuge</b> - your own traps make your animals safe from
-          capture, while the enemy's traps still strip your rank. Games run
-          long, and defending is genuinely possible.</li>
-    </ul>
-
-    <h3>Repeating a position</h3>
-    <p>If the same position comes up three times the game offers a draw - but
-       it is only an offer. Press <b>Play on</b> and the game carries on, and
-       will not offer again.</p>
-    <p>What it will not let you do is shuffle forever. <b>No position may stand
-       more than three times.</b> The move that would bring one back a fourth
-       time is simply not allowed - the square shows a red <b>✕</b> instead of a
-       move dot, and you have to move something else. The computer plays under
-       exactly the same restriction.</p>
-    <p>There is no move limit: a long stretch with no captures simply
-       continues. After playing on, the game can only end by a den being taken,
-       every animal being captured, or someone having no legal move.</p>
-
-    <h3>Looking back</h3>
-    <p>When a game ends, <b>Look back through the moves</b> steps through it
-       one move at a time, so you can find where it went wrong. The arrow keys
-       work too. Nothing you do in there changes the game.</p>
+    <div id="rulesBody" data-th="rules.html"></div>
   </div>
 </div>
 
+<script src="/static/i18n.js"></script>
 <script src="/static/rules.js"></script>
 <script src="/static/app.js"></script>
 </body>

@@ -18,6 +18,7 @@ No dependencies to install - it is Python standard library only.
 | File | What it does |
 |------|--------------|
 | `server.py` | Serves the page and passes moves between two people in a room. Nothing else. |
+| `static/i18n.js` | Every phrase in English and Chinese, plus the three sets of piece markings. |
 | `static/rules.js` | The whole rulebook: moves, the river, jumps, traps, dens, draws. |
 | `static/ai.js` | The computer opponent. Runs in a web worker **in the player's browser**. |
 | `static/app.js` | Screens, board drawing, online room plumbing. |
@@ -93,6 +94,30 @@ unwound from the live game, so reviewing can never disturb the real board.
 Moves are relayed, not refereed: both browsers run the identical rulebook and
 each one checks every move it receives, so an out-of-order or impossible move
 is caught and reported rather than silently accepted.
+
+## Language and piece markings
+
+The button at the top of the menu switches the whole interface between English
+and Simplified Chinese - menus, status lines, the rules panel, and even the
+server's error messages, which is why the API answers with a short `code` field
+alongside the English `error` text.
+
+Pieces can be drawn three ways, chosen in the menu or cycled mid-game from the
+board controls:
+
+| Set | Marking |
+|-----|---------|
+| `face` (default) | 🐭 🐱 🐶 🐺 🐆 🐯 🦁 🐘 |
+| `body` | 🐁 🐈 🐕 🐺 🐆 🐅 🦁 🐘 |
+| `zh` | 鼠 猫 狗 狼 豹 虎 狮 象 |
+
+Emoji has no lion or wolf body and no leopard or elephant face, so the two
+picture sets overlap in places. Only the character set is completely
+unambiguous - and it is how the game is marked on a real board.
+
+Both choices are kept in `localStorage`. The move log stores the bare facts of
+each move rather than rendered text, so switching language or markings rewrites
+the history already on screen.
 
 ## Installing it on a phone
 

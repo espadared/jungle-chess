@@ -176,7 +176,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         body = self.body_json()
         if body is None:
-            self.send_json({"error": "Bad request."}, 400)
+            self.send_json({"error": "Bad request.", "code": "generic"}, 400)
             return
         routes = {
             "/api/create": self.handle_create,
@@ -227,7 +227,7 @@ class Handler(BaseHTTPRequestHandler):
         code = str(body.get("room", "")).strip().upper()
         room = ROOMS.get(code)
         if room is None:
-            self.send_json({"error": "No room with that code."}, 404)
+            self.send_json({"error": "No room with that code.", "code": "roomMissing"}, 404)
             return
         if room["joined"][1]:
             # Already two people here - unless one of them is us coming back.
@@ -239,7 +239,7 @@ class Handler(BaseHTTPRequestHandler):
                                     "token": room["tokens"][seat],
                                     "state": view(room, seat)})
                     return
-            self.send_json({"error": "That room is full."}, 409)
+            self.send_json({"error": "That room is full.", "code": "roomFull"}, 409)
             return
         room["joined"][1] = True
         room["seen"][1] = time.time()
@@ -252,16 +252,16 @@ class Handler(BaseHTTPRequestHandler):
     def handle_move(self, body):
         room, seat = self.seated(body)
         if room is None:
-            self.send_json({"error": "No room with that code."}, 404)
+            self.send_json({"error": "No room with that code.", "code": "roomMissing"}, 404)
             return
         if seat is None:
-            self.send_json({"error": "You are not seated in this game."}, 403)
+            self.send_json({"error": "You are not seated in this game.", "code": "notSeated"}, 403)
             return
         try:
             move = int(body.get("move"))
             ply = int(body.get("ply"))
         except (TypeError, ValueError):
-            self.send_json({"error": "Bad move."}, 400)
+            self.send_json({"error": "Bad move.", "code": "generic"}, 400)
             return
 
         if ply != len(room["moves"]):
@@ -269,10 +269,10 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"ok": True, "state": view(room, seat)})
             return
         if room["colors"][seat] != ply % 2:
-            self.send_json({"error": "Not your turn."}, 409)
+            self.send_json({"error": "Not your turn.", "code": "notTurn"}, 409)
             return
         if not 0 <= move < (1 << 20):
-            self.send_json({"error": "Bad move."}, 400)
+            self.send_json({"error": "Bad move.", "code": "generic"}, 400)
             return
 
         room["moves"].append(move)
@@ -282,7 +282,7 @@ class Handler(BaseHTTPRequestHandler):
     def handle_rematch(self, body):
         room, seat = self.seated(body)
         if room is None or seat is None:
-            self.send_json({"error": "No room with that code."}, 404)
+            self.send_json({"error": "No room with that code.", "code": "roomMissing"}, 404)
             return
         winner = body.get("winner")
         if winner in (0, 1) and not room["rematch"][0] and not room["rematch"][1]:
@@ -301,7 +301,7 @@ class Handler(BaseHTTPRequestHandler):
     def handle_resign(self, body):
         room, seat = self.seated(body)
         if room is None or seat is None:
-            self.send_json({"error": "No room with that code."}, 404)
+            self.send_json({"error": "No room with that code.", "code": "roomMissing"}, 404)
             return
         room["resigned"] = seat
         bump(room)
@@ -311,7 +311,7 @@ class Handler(BaseHTTPRequestHandler):
         """Someone would rather keep playing than accept the draw."""
         room, seat = self.seated(body)
         if room is None or seat is None:
-            self.send_json({"error": "No room with that code."}, 404)
+            self.send_json({"error": "No room with that code.", "code": "roomMissing"}, 404)
             return
         room["waived"] = True
         bump(room)

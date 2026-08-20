@@ -7,19 +7,37 @@
   var J = window.Jungle;
   var $ = function (id) { return document.getElementById(id); };
 
-  var VARIANT_NAME = {
-    classic: 'Classic traps',
-    open: 'Open traps · variation 1',
-    safe: 'Safe traps · variation 2',
-    home: 'Home refuge · variation 2b'
-  };
+  // ------------------------------------------------- language and markings
+  var PACKS = window.JungleText.packs;
+  var PIECE_SETS = window.JungleText.PIECE_SETS;
 
-  var LEVEL_HINT = {
-    easy: 'Easy: barely looks ahead and makes mistakes on purpose.',
-    normal: 'Normal: thinks under a second. A fair club-level game.',
-    hard: 'Hard: thinks about 2.5 seconds a move and looks a long way ahead.',
-    insane: 'Insane: thinks about 6 seconds a move. Expect to lose.'
-  };
+  function remember(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) { /* private browsing */ }
+  }
+  function recall(key, fallback) {
+    try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+  }
+
+  var lang = recall('jungle-lang', (navigator.language || '').indexOf('zh') === 0 ? 'zh' : 'en');
+  if (!PACKS[lang]) lang = 'en';
+
+  var pieceStyle = recall('jungle-pieces', 'face');
+  if (!PIECE_SETS[pieceStyle]) pieceStyle = 'face';
+
+  // Look a phrase up, filling in {placeholders}.
+  function T(key, vals) {
+    var s = PACKS[lang][key];
+    if (s === undefined) s = PACKS.en[key];
+    if (s === undefined) return key;
+    if (vals) {
+      s = s.replace(/\{(\w+)\}/g, function (whole, name) {
+        return vals[name] === undefined ? whole : vals[name];
+      });
+    }
+    return s;
+  }
+
+  function glyph(rank) { return PIECE_SETS[pieceStyle][rank]; }
 
   var G = {
     mode: null,          // 'ai' | 'local' | 'online'
@@ -54,7 +72,7 @@
         if (m.id !== G.reqId) return;                 // a stale answer, ignore it
         if (m.type === 'info') {
           if (G.pendingKind === 'move') {
-            $('subLine').textContent = 'thinking… depth ' + m.depth;
+            $('subLine').textContent = T('status.depth', { n: m.depth });
           }
         } else if (m.type === 'move') {
           G.busy = false;
@@ -143,13 +161,13 @@
       else if (J.TRAP[i] !== -1) html += '<span class="mark">⚠️</span>';
       if (p !== 0) {
         var side = p > 0 ? 0 : 1, rank = p > 0 ? p : -p;
-        html += '<div class="piece r' + side + '">' + J.EMOJI[rank] +
+        html += '<div class="piece r' + side + ' st-' + pieceStyle + '">' + glyph(rank) +
                 '<span class="rk">' + rank + '</span></div>';
       }
       cell.innerHTML = html;
     }
 
-    $('ruleChip').textContent = VARIANT_NAME[st.variant] || VARIANT_NAME.classic;
+    $('ruleChip').textContent = T('chip.' + st.variant);
     renderCaptured(st);
     renderStatus(over);
     renderLog();
@@ -166,14 +184,14 @@
     var topSide = G.flip ? 0 : 1;
     function lost(side) {
       var out = '';
-      for (var r = 8; r >= 1; r--) if (!alive[side][r]) out += J.EMOJI[r];
+      for (var r = 8; r >= 1; r--) if (!alive[side][r]) out += glyph(r);
       return out;
     }
     $('capturedTop').textContent = lost(topSide);
     $('capturedBottom').textContent = lost(1 - topSide);
   }
 
-  function sideName(s) { return s === 0 ? 'Red' : 'Black'; }
+  function sideName(s) { return T(s === 0 ? 'side.red' : 'side.black'); }
 
   function outcomeNow() {
     if (G.mode === 'online' && G.online && G.online.resigned !== null &&
@@ -192,31 +210,35 @@
     var turn = G.st.turn;
 
     if (G.review) {
-      $('statusLine').textContent = 'Looking back';
-      $('subLine').textContent = G.review.ply === 0 ? 'the opening position'
-        : 'after ' + G.log[G.review.ply - 1];
+      $('statusLine').textContent = T('review.title');
+      $('subLine').textContent = G.review.ply === 0 ? T('review.opening')
+        : T('review.after', { move: logText(G.log[G.review.ply - 1]) });
       return;
     }
 
     if (over) {
-      line = over.winner === -1 ? 'Draw' : sideName(over.winner) + ' wins';
+      line = over.winner === -1 ? T('over.draw')
+                                : T('over.wins', { side: sideName(over.winner) });
     } else if (G.mode === 'ai') {
-      line = turn === G.humanSide ? 'Your move (' + sideName(G.humanSide) + ')'
-                                  : 'Computer is thinking';
+      line = turn === G.humanSide ? T('status.yourMove', { side: sideName(G.humanSide) })
+                                  : T('status.thinking');
     } else if (G.mode === 'local') {
-      line = sideName(turn) + ' to move';
-    } else {
+      line = T('status.toMove', { side: sideName(turn) });
+    } else if (G.mode === 'online' && G.online) {
       var o = G.online;
       if (!o.joined || !o.joined[1]) {
-        line = 'Waiting for your friend';
-        sub = 'Send them the invite link or the room code.';
+        line = T('status.waitFriend');
+        sub = T('status.sendLink');
       } else {
-        line = turn === G.mySide ? 'Your move (' + sideName(G.mySide) + ')'
-                                 : 'Waiting for ' + sideName(turn);
+        line = turn === G.mySide ? T('status.yourMove', { side: sideName(G.mySide) })
+                                 : T('status.waitSide', { side: sideName(turn) });
       }
-      if (o.wins) sub = sub || ('Games won — you ' + o.wins[o.seat] + ', them ' + o.wins[o.seat ^ 1]);
-      $('oppState').textContent = (o.online && o.online[o.seat ^ 1]) ? 'friend online' : 'friend away';
-      $('oppState').className = 'oppstate' + ((o.online && o.online[o.seat ^ 1]) ? ' on' : '');
+      if (o.wins) {
+        sub = sub || T('status.score', { you: o.wins[o.seat], them: o.wins[o.seat ^ 1] });
+      }
+      var here = !!(o.online && o.online[o.seat ^ 1]);
+      $('oppState').textContent = T(here ? 'game.friendOnline' : 'game.friendAway');
+      $('oppState').className = 'oppstate' + (here ? ' on' : '');
     }
 
     if (!over && G.notice) sub = G.notice;
@@ -225,26 +247,39 @@
     if (!G.busy || G.pendingKind !== 'move') $('subLine').textContent = sub;
   }
 
+  // The log keeps the bare facts of each move, so it can be written out again
+  // in whichever language and piece markings are in force right now.
+  function logEntry(st, mv) {
+    var p = st.board[J.mFrom(mv)];
+    var cap = J.mCap(mv);
+    return {
+      rank: p > 0 ? p : -p,
+      from: J.mFrom(mv),
+      to: J.mTo(mv),
+      cap: cap === 0 ? 0 : (cap > 0 ? cap : -cap)
+    };
+  }
+
+  function logText(e) {
+    if (!e) return '';
+    var s = glyph(e.rank) + ' ' + J.coordName(e.from) +
+            (e.cap ? '×' : '-') + J.coordName(e.to);
+    if (e.cap) s += ' ' + glyph(e.cap);
+    return s;
+  }
+
   function renderLog() {
     var html = '';
     for (var i = 0; i < G.log.length; i++) {
       var here = G.review && G.review.ply === i + 1;
       html += '<span class="mv' + (here ? ' at' : '') + '">' +
-              (i % 2 === 0 ? ((i / 2 | 0) + 1) + '. ' : '') + G.log[i] + '</span>';
+              (i % 2 === 0 ? ((i / 2 | 0) + 1) + '. ' : '') + logText(G.log[i]) + '</span>';
     }
     $('moveLog').innerHTML = html;
     var mark = $('moveLog').querySelector('.mv.at');
     if (mark) mark.scrollIntoView({ block: 'nearest' });
     else $('moveLog').scrollTop = $('moveLog').scrollHeight;
   }
-
-  var REASONS = {
-    den: 'reached the den',
-    captured: 'captured every animal',
-    stuck: 'the loser had no legal move left',
-    resign: 'the other player resigned',
-    repetition: 'the same position came up three times'
-  };
 
   function renderOverlay(over) {
     var box = $('overlay');
@@ -257,10 +292,10 @@
       else if (G.mode === 'online') youWon = over.winner === G.mySide;
     }
     $('overEmoji').textContent = over.winner === -1 ? '🤝' : (youWon === false ? '😿' : '🏆');
-    $('overTitle').textContent = over.winner === -1 ? 'Draw'
-      : (youWon === null ? sideName(over.winner) + ' wins'
-        : (youWon ? 'You win!' : 'You lose'));
-    $('overText').textContent = REASONS[over.reason] || '';
+    $('overTitle').textContent = over.winner === -1 ? T('over.draw')
+      : (youWon === null ? T('over.wins', { side: sideName(over.winner) })
+        : T(youWon ? 'over.youWin' : 'over.youLose'));
+    $('overText').textContent = T('reason.' + over.reason);
 
     // A draw is only ever a suggestion - either player can wave it off.
     $('resumeBtn').classList.toggle('hidden', over.winner !== -1);
@@ -270,8 +305,8 @@
     if (G.mode === 'online' && G.online.rematch) {
       note.classList.remove('hidden');
       note.textContent = G.online.rematch[G.online.seat]
-        ? 'Waiting for your friend to accept the rematch…'
-        : (G.online.rematch[G.online.seat ^ 1] ? 'Your friend wants a rematch!' : '');
+        ? T('over.waitRematch')
+        : (G.online.rematch[G.online.seat ^ 1] ? T('over.wantsRematch') : '');
     } else {
       note.classList.add('hidden');
     }
@@ -308,7 +343,7 @@
     bar.classList.toggle('hidden', !G.review);
     document.querySelector('.controls').classList.toggle('hidden', !!G.review);
     if (!G.review) return;
-    $('revLabel').textContent = 'Move ' + G.review.ply + ' of ' + G.moves.length;
+    $('revLabel').textContent = T('review.count', { n: G.review.ply, m: G.moves.length });
     $('revStart').disabled = $('revPrev').disabled = G.review.ply === 0;
     $('revEnd').disabled = $('revNext').disabled = G.review.ply === G.moves.length;
   }
@@ -336,8 +371,7 @@
     // Tapping a square the repetition rule has closed off should say so,
     // rather than just silently doing nothing.
     if (G.sel !== -1 && G.blocked.indexOf(i) !== -1) {
-      G.notice = 'That would repeat the same position a ' +
-                 (J.REPEAT_LIMIT + 1) + 'th time — move something else.';
+      G.notice = T('status.noRepeat', { n: J.REPEAT_LIMIT + 1 });
       render();
       return;
     }
@@ -356,7 +390,7 @@
   }
 
   function doMove(mv) {
-    G.log.push(J.moveText(G.st, mv));
+    G.log.push(logEntry(G.st, mv));
     G.moves.push(mv);
     G.last = { from: J.mFrom(mv), to: J.mTo(mv) };
     J.applyMove(G.st, mv);
@@ -466,27 +500,33 @@
     poll(G.online.pollId);
   }
 
+  // The server answers with a short code so the message can be shown in
+  // whichever language is in force.
+  function serverError(res) {
+    return T(res.code ? 'err.' + res.code : 'err.generic');
+  }
+
   function createRoom() {
     api('/api/create', { variant: currentVariant() }).then(function (res) {
-      if (res.error) { alert(res.error); return; }
+      if (res.error) { alert(serverError(res)); return; }
       enterOnline(res);
     }).catch(netFail);
   }
 
   function joinRoom(code) {
     code = (code || '').trim().toUpperCase();
-    if (code.length !== 4) { alert('Room codes are 4 letters.'); return; }
+    if (code.length !== 4) { alert(T('err.codeLength')); return; }
     var saved = savedSeat();
     var body = { room: code };
     if (saved && saved.room === code) body.token = saved.token;
     api('/api/join', body).then(function (res) {
-      if (res.error) { alert(res.error); return; }
+      if (res.error) { alert(serverError(res)); return; }
       enterOnline(res);
     }).catch(netFail);
   }
 
   function netFail() {
-    alert('Could not reach the game server. Check your connection and try again.');
+    alert(T('err.network'));
   }
 
   function sendMove(mv) {
@@ -525,10 +565,10 @@
       var ok = false;
       for (var k = 0; k < legal.length; k++) if (legal[k] === mv) { ok = true; break; }
       if (!ok) {
-        G.desync = 'The two boards disagreed — reload the page to resync.';
+        G.desync = T('status.desync');
         break;
       }
-      G.log.push(J.moveText(G.st, mv));
+      G.log.push(logEntry(G.st, mv));
       G.moves.push(mv);
       G.last = { from: J.mFrom(mv), to: J.mTo(mv) };
       J.applyMove(G.st, mv);
@@ -563,7 +603,7 @@
       });
       b.classList.add('selected');
       G.level = b.dataset.level;
-      $('levelHint').textContent = LEVEL_HINT[G.level];
+      $('levelHint').textContent = T('level.' + G.level + '.hint');
     });
   });
 
@@ -601,12 +641,12 @@
   $('hintBtn').addEventListener('click', function () {
     if (G.busy || outcomeNow()) return;
     ask('hint', 'hard', 1200);
-    $('subLine').textContent = 'looking for a good move…';
+    $('subLine').textContent = T('status.hinting');
   });
 
   $('resignBtn').addEventListener('click', function () {
     if (outcomeNow()) return;
-    if (!confirm('Give up this game?')) return;
+    if (!confirm(T('game.resignAsk'))) return;
     if (G.mode === 'online') {
       api('/api/resign', {
         room: G.online.room, seat: G.online.seat, token: G.online.token
@@ -662,11 +702,11 @@
 
   $('copyLink').addEventListener('click', function () {
     var url = location.origin + '/?room=' + G.online.room;
-    var done = function () { $('copyLink').textContent = 'Link copied!'; };
+    var done = function () { $('copyLink').textContent = T('game.copied'); };
     if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () {
-      prompt('Copy this link:', url);
+      prompt(T('game.copyPrompt'), url);
     });
-    else prompt('Copy this link:', url);
+    else prompt(T('game.copyPrompt'), url);
   });
 
   $('openRules').addEventListener('click', function () { $('rulesModal').classList.remove('hidden'); });
@@ -681,8 +721,86 @@
     r.addEventListener('change', function () { G.variant = currentVariant(); });
   });
 
+  // ------------------------------------------------- applying the settings
+  function rankLine(withNames) {
+    var out = [];
+    for (var r = 8; r >= 1; r--) {
+      out.push(glyph(r) + ' ' + r + (withNames ? ' ' + T('piece.' + r) : ''));
+    }
+    return out.join(' > ');
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = T('doc.lang');
+    document.title = T('doc.title');
+    $('brandTitle').textContent = lang === 'zh' ? '斗兽棋' : 'Jungle';
+
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      el.textContent = T(el.dataset.t);
+    });
+    document.querySelectorAll('[data-th]').forEach(function (el) {
+      el.innerHTML = T(el.dataset.th);
+    });
+    document.querySelectorAll('[data-tph]').forEach(function (el) {
+      el.placeholder = T(el.dataset.tph);
+    });
+    document.querySelectorAll('[data-ttl]').forEach(function (el) {
+      el.title = T(el.dataset.ttl);
+    });
+
+    $('levelHint').textContent = T('level.' + G.level + '.hint');
+    applyPieceStyle();       // rank lines carry both language and markings
+    if (G.st) render();
+  }
+
+  function applyPieceStyle() {
+    $('brandIcons').textContent = PIECE_SETS[pieceStyle].slice(1).reverse().join(' ');
+    $('rankLine').textContent =
+      T('menu.ranksLead') + ' ' + rankLine(false) + ' ' + T('menu.ranksTail');
+    var modalRanks = $('rankLineModal');
+    if (modalRanks) modalRanks.textContent = rankLine(true);
+
+    $('styleBtn').textContent = PIECE_SETS[pieceStyle][6];   // the tiger, as a sample
+    document.querySelectorAll('#styleChoices .style').forEach(function (b) {
+      b.classList.toggle('selected', b.dataset.style === pieceStyle);
+    });
+    document.querySelectorAll('[data-style-preview]').forEach(function (el) {
+      var set = PIECE_SETS[el.dataset.stylePreview];
+      el.textContent = [set[8], set[7], set[6], set[5]].join(' ');
+      el.className = 'style-preview pv-' + el.dataset.stylePreview;
+    });
+    if (G.st) render();
+  }
+
+  function setLanguage(next) {
+    lang = PACKS[next] ? next : 'en';
+    remember('jungle-lang', lang);
+    applyLanguage();
+  }
+
+  function setPieceStyle(next) {
+    pieceStyle = PIECE_SETS[next] ? next : 'face';
+    remember('jungle-pieces', pieceStyle);
+    applyPieceStyle();
+  }
+
+  $('langBtn').addEventListener('click', function () {
+    setLanguage(lang === 'en' ? 'zh' : 'en');
+  });
+
+  document.querySelectorAll('#styleChoices .style').forEach(function (b) {
+    b.addEventListener('click', function () { setPieceStyle(b.dataset.style); });
+  });
+
+  // Mid-game cycling, for when two animals still look alike on the board.
+  $('styleBtn').addEventListener('click', function () {
+    var order = ['face', 'body', 'zh'];
+    setPieceStyle(order[(order.indexOf(pieceStyle) + 1) % order.length]);
+  });
+
   // ---------------------------------------------------------------- boot
   G.st = J.newState('classic');
+  applyLanguage();
   var params = new URLSearchParams(location.search);
   var invited = (params.get('room') || '').toUpperCase();
   if (invited.length === 4) {
@@ -729,10 +847,9 @@
     if (iOS && !installed) {
       $('installCard').classList.remove('hidden');
       $('installBtn').classList.add('hidden');
-      $('installHint').innerHTML =
-        'Tap <b>Share</b> at the bottom of Safari, then <b>Add to Home Screen</b>. ' +
-        'Jungle then opens like a normal app, and the computer opponent works ' +
-        'with no internet at all.';
+      // Swapping the key means the wording follows the language button too.
+      $('installHint').dataset.th = 'install.ios';
+      $('installHint').innerHTML = T('install.ios');
     }
   })();
 

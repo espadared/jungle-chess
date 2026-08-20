@@ -30,8 +30,15 @@ body {
   min-height: 100vh;
 }
 
-.screen { max-width: 520px; margin: 0 auto; padding: 14px 0 30px; }
+.screen { max-width: 520px; margin: 0 auto; padding: 14px 0 30px; position: relative; }
 .hidden { display: none !important; }
+
+.langbtn {
+  position: absolute; top: 10px; right: 0; z-index: 5;
+  background: rgba(0,0,0,.28); color: var(--gold);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 6px 14px; font-size: 14px; font-weight: 600; cursor: pointer;
+}
 
 /* ---------------- menu ---------------- */
 .brand { text-align: center; margin: 10px 0 18px; }
@@ -87,6 +94,22 @@ body {
 .pill { padding: 7px 10px; font-size: 13px; }
 
 .hint { color: var(--dim); font-size: 13px; margin: 8px 0; }
+
+/* piece markings picker */
+.styles { display: grid; gap: 8px; }
+.style {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  background: rgba(0,0,0,.2); color: var(--text);
+  border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; cursor: pointer; text-align: left;
+}
+.style.selected { border-color: var(--gold); background: rgba(244,201,93,.10); }
+.style-preview { font-size: 21px; letter-spacing: 3px; flex: none; }
+.style-preview.pv-zh {
+  font-size: 19px; font-weight: 800; color: var(--gold);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", serif;
+}
+.style-name { font-size: 14px; }
 
 .primary {
   display: block; width: 100%; margin-top: 10px;
@@ -191,6 +214,14 @@ body {
   font-size: min(5.4vw, 25px); line-height: 1;
   box-shadow: 0 2px 4px rgba(0,0,0,.45);
   pointer-events: none; position: relative;
+}
+/* Characters instead of animals - how the game reads on a real board. */
+.piece.st-zh {
+  color: #fff; font-weight: 800;
+  /* a touch smaller than the emoji, so the rank badge has room to sit clear */
+  font-size: min(5.2vw, 24px);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", serif;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
 }
 .piece.r0 { background: linear-gradient(180deg, #ff7a6d, var(--red)); border: 2px solid #ffd2cc; }
 .piece.r1 { background: linear-gradient(180deg, #4a5a68, var(--black)); border: 2px solid #aebbc6; }

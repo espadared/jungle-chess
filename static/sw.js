@@ -5,13 +5,20 @@
  * a game. Only the room API for playing a friend has to reach the server, and
  * those requests are deliberately never touched here.
  *
- * Bump CACHE when the shell files change so old copies get cleared out.
+ * The whole shell lives in ONE versioned cache, filled in a single pass at
+ * install. That matters: refreshing files individually in the background can
+ * leave a new app.js sitting next to last week's index.html, which breaks the
+ * page in a way that is painful to debug.
+ *
+ * So: BUMP `CACHE` WHENEVER A SHELL FILE CHANGES. Nothing else triggers an
+ * update, and installed copies will happily serve the old version forever.
  */
-var CACHE = 'jungle-v1';
+var CACHE = 'jungle-v3';
 
 var SHELL = [
   '/',
   '/static/style.css',
+  '/static/i18n.js',
   '/static/rules.js',
   '/static/app.js',
   '/static/ai.js',
@@ -25,7 +32,14 @@ var SHELL = [
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(CACHE)
-      .then(function (c) { return c.addAll(SHELL); })
+      // cache: 'reload' so a stale HTTP cache cannot poison the new version
+      .then(function (c) {
+        return Promise.all(SHELL.map(function (url) {
+          return fetch(new Request(url, { cache: 'reload' })).then(function (res) {
+            if (res && res.ok) return c.put(url, res);
+          });
+        }));
+      })
       .then(function () { return self.skipWaiting(); })
   );
 });
@@ -40,16 +54,6 @@ self.addEventListener('activate', function (e) {
   );
 });
 
-function freshen(req) {
-  return fetch(req).then(function (res) {
-    if (res && res.status === 200 && res.type === 'basic') {
-      var copy = res.clone();
-      caches.open(CACHE).then(function (c) { c.put(req, copy); });
-    }
-    return res;
-  });
-}
-
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET') return;
@@ -61,23 +65,20 @@ self.addEventListener('fetch', function (e) {
   // poll must never be answered from a cache.
   if (url.pathname.indexOf('/api/') === 0) return;
 
-  // Opening the app: serve the stored page at once, then quietly refresh it so
-  // the next launch is up to date. This is what makes it open instantly even
-  // when the free server is still waking up.
+  // Opening the app: serve the stored page at once. This is what makes it
+  // open instantly even when the free server is still waking up.
   if (req.mode === 'navigate') {
     e.respondWith(
-      caches.match('/').then(function (hit) {
-        var net = freshen(new Request('/')).catch(function () { return hit; });
-        return hit || net;
+      caches.match('/', { cacheName: CACHE }).then(function (hit) {
+        return hit || fetch(req);
       })
     );
     return;
   }
 
   e.respondWith(
-    caches.match(req).then(function (hit) {
-      var net = freshen(req).catch(function () { return hit; });
-      return hit || net;
+    caches.match(req, { cacheName: CACHE }).then(function (hit) {
+      return hit || fetch(req);
     })
   );
 });
