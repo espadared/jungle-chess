@@ -852,10 +852,11 @@
   }
 
   // ------------------------------------------------- installing on a phone
-  // The phone app already carries every file on the device, so there is nothing
-  // for a service worker to cache - and it cannot register off a capacitor://
-  // page anyway.
-  var onTheWeb = location.protocol === 'http:' || location.protocol === 'https:';
+  // Inside the phone app every file is already on the device, so there is
+  // nothing for a service worker to cache and nothing to install. Checking the
+  // protocol is not enough: Capacitor serves from capacitor:// on iOS but from
+  // https://localhost on Android, which looks exactly like the web.
+  var onTheWeb = !window.JUNGLE_NATIVE;
 
   if (onTheWeb && 'serviceWorker' in navigator) {
     // If a copy was already installed, this page was served from the old
@@ -878,6 +879,7 @@
   var installPrompt = null;
 
   window.addEventListener('beforeinstallprompt', function (e) {
+    if (!onTheWeb) return;
     e.preventDefault();
     installPrompt = e;
     $('installCard').classList.remove('hidden');
@@ -902,7 +904,7 @@
               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     var installed = navigator.standalone === true ||
                     window.matchMedia('(display-mode: standalone)').matches;
-    if (iOS && !installed) {
+    if (onTheWeb && iOS && !installed) {
       $('installCard').classList.remove('hidden');
       $('installBtn').classList.add('hidden');
       // Swapping the key means the wording follows the language button too.

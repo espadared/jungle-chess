@@ -25,6 +25,7 @@ WWW = ROOT / "mobile" / "www"
 SERVER = "https://jungle-chess-ghxu.onrender.com"
 
 CONFIG = """/* Written by mobile/build.py - do not edit. */
+window.JUNGLE_NATIVE = true;
 window.JUNGLE_API = %r;
 window.JUNGLE_SITE = %r;
 """ % (SERVER, SERVER)

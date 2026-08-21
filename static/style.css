@@ -30,6 +30,17 @@ body {
   min-height: 100vh;
 }
 
+/* The page runs full-screen under the iPhone status bar, so scrolling content
+   would otherwise slide up behind the clock. This masks that strip. */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0;
+  height: env(safe-area-inset-top);
+  background: var(--bg2);
+  z-index: 60;
+  pointer-events: none;
+}
+
 .screen { max-width: 520px; margin: 0 auto; padding: 14px 0 30px; position: relative; }
 .hidden { display: none !important; }
 
