@@ -119,14 +119,31 @@ class Handler(BaseHTTPRequestHandler):
             # Long polls get dropped whenever a phone locks. Not an error.
             self.close_connection = True
 
+    def send_cors(self):
+        """The phone app is served off the device, so every call to the room API
+        is cross-origin. There is nothing here worth guarding by origin - no
+        accounts, no personal data, and a room still needs its secret token."""
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+
     def send_json(self, payload, status=200):
         body = json.dumps(payload).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        self.send_cors()
         self.end_headers()
         self.write_body(body)
+
+    def do_OPTIONS(self):
+        """Sending JSON makes the browser ask permission first."""
+        self.send_response(204)
+        self.send_header("Content-Length", "0")
+        self.send_cors()
+        self.send_header("Access-Control-Max-Age", "86400")
+        self.end_headers()
 
     def send_file(self, path):
         try:

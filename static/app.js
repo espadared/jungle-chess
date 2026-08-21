@@ -482,8 +482,19 @@
   }
 
   // ---------------------------------------------------------------- online
+  // On the website the room API is on this same origin, so a bare path works.
+  // Inside the phone app the page is served from the device itself, so there is
+  // no server to be relative to - the wrapper sets window.JUNGLE_API to the
+  // address of the real one.
+  var API = window.JUNGLE_API || '';
+
+  // Where an invite link should point. Inside the app the page comes off the
+  // device, so location.origin is something like capacitor://localhost - fine
+  // for loading the game, useless for sending to a friend.
+  var SITE = window.JUNGLE_SITE || location.origin;
+
   function api(path, body) {
-    return fetch(path, {
+    return fetch(API + path, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body || {})
@@ -603,7 +614,7 @@
   function poll(id) {
     var o = G.online;
     if (!o || o.pollId !== id || G.mode !== 'online') return;
-    fetch('/api/state?room=' + o.room + '&seat=' + o.seat + '&v=' + o.version)
+    fetch(API + '/api/state?room=' + o.room + '&seat=' + o.seat + '&v=' + o.version)
       .then(function (r) { return r.json(); })
       .then(function (s) {
         if (!o || o.pollId !== id) return;
@@ -721,7 +732,7 @@
   $('menuBtn').addEventListener('click', function () { $('back').click(); });
 
   $('copyLink').addEventListener('click', function () {
-    var url = location.origin + '/?room=' + G.online.room;
+    var url = SITE + '/?room=' + G.online.room;
     var done = function () { $('copyLink').textContent = T('game.copied'); };
     if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () {
       prompt(T('game.copyPrompt'), url);
@@ -841,7 +852,12 @@
   }
 
   // ------------------------------------------------- installing on a phone
-  if ('serviceWorker' in navigator) {
+  // The phone app already carries every file on the device, so there is nothing
+  // for a service worker to cache - and it cannot register off a capacitor://
+  // page anyway.
+  var onTheWeb = location.protocol === 'http:' || location.protocol === 'https:';
+
+  if (onTheWeb && 'serviceWorker' in navigator) {
     // If a copy was already installed, this page was served from the old
     // stored version. When the new worker takes over, reload once so nobody
     // has to open the app twice to see an update.

@@ -1,3 +1,32 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# --- phone app ---
+# Installed, not written: npm can fetch these again from package-lock.json.
+mobile/node_modules/
+
+# Generated from static/ by mobile/build.py, and copied into the native
+# projects by "npx cap sync". Keeping copies in git only invites them to drift
+# out of step with the real source in static/.
+mobile/www/
+mobile/ios/App/App/public/
+mobile/android/app/src/main/assets/public/
+
+# Xcode and Android Studio scratch
+mobile/ios/App/Pods/
+mobile/ios/App/build/
+mobile/ios/App/App.xcworkspace/xcuserdata/
+mobile/ios/App/App.xcodeproj/xcuserdata/
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/local.properties
+mobile/android/.idea/
+
+# Signing material must never be committed - see mobile/README.md
+*.keystore
+*.jks
+*.mobileprovision
+*.p12
+*.p8

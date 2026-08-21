@@ -1,0 +1,13 @@
+{
+  "appId": "com.espadared.jungle",
+  "appName": "Jungle",
+  "webDir": "www",
+  "backgroundColor": "#0d1f18",
+  "android": {
+    "backgroundColor": "#0d1f18"
+  },
+  "ios": {
+    "backgroundColor": "#0d1f18",
+    "contentInset": "always"
+  }
+}
