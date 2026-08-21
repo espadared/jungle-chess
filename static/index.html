@@ -16,93 +16,340 @@
 </head>
 <body>
 
-<!-- Pieces drawn for this game. Emoji cannot give a complete head set and looks
-     different on every device; these are identical everywhere and stay sharp at
-     any size. Paint is set with presentation attributes rather than CSS classes
-     because a stylesheet cannot reach inside a <use> shadow tree. -->
-<svg style="display:none" aria-hidden="true">
-  <symbol id="pc1" viewBox="0 0 64 64"><!-- rat: big round ears, tapered snout -->
-    <circle fill="#fff" cx="14" cy="19" r="11.5"/><circle fill="#fff" cx="50" cy="19" r="11.5"/>
-    <circle fill="#22303a" cx="14" cy="19" r="5.5"/><circle fill="#22303a" cx="50" cy="19" r="5.5"/>
-    <ellipse fill="#fff" cx="32" cy="35" rx="17" ry="16"/>
-    <ellipse fill="#fff" cx="32" cy="49" rx="8.5" ry="8"/>
-    <circle fill="#22303a" cx="25" cy="33" r="3.2"/><circle fill="#22303a" cx="39" cy="33" r="3.2"/>
-    <ellipse fill="#22303a" cx="32" cy="50" rx="4.2" ry="3.2"/>
+<!-- Piece artwork drawn for this game, in two finishes: pc_f* flat
+     colour, pc_g* the same shapes shaded like a moulded toy. Generated
+     from tools/pieces.py - edit there, not here.
+     NB the sprite must stay in the render tree: display:none stops a
+     gradient resolving as a paint server, which empties every head. -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden">
+  <defs>
+    <radialGradient id="medal" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#f2e6d2"/></radialGradient>
+    <radialGradient id="grad1" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#ccd3da"/><stop offset="1" stop-color="#939ea8"/></radialGradient>
+    <radialGradient id="grad2" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#f7c78f"/><stop offset="1" stop-color="#d48c37"/></radialGradient>
+    <radialGradient id="grad3" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#dfbb96"/><stop offset="1" stop-color="#b07942"/></radialGradient>
+    <radialGradient id="grad4" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#b7c2cc"/><stop offset="1" stop-color="#748493"/></radialGradient>
+    <radialGradient id="grad5" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#f6da96"/><stop offset="1" stop-color="#d3a841"/></radialGradient>
+    <radialGradient id="grad6" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#f8b784"/><stop offset="1" stop-color="#d67426"/></radialGradient>
+    <radialGradient id="grad7" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#f9dc9b"/><stop offset="1" stop-color="#d8ac49"/></radialGradient>
+    <radialGradient id="grad8" cx="35%" cy="28%" r="78%"><stop offset="0" stop-color="#c0cbd5"/><stop offset="1" stop-color="#8292a1"/></radialGradient>
+  </defs>
+  <symbol id="pc_f1" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <circle cx="15" cy="20" r="12" fill="#a8b4c0"/>
+    <circle cx="49" cy="20" r="12" fill="#a8b4c0"/>
+    <circle cx="15" cy="20" r="7" fill="#f4a8b7"/>
+    <circle cx="49" cy="20" r="7" fill="#f4a8b7"/>
+    <ellipse cx="32" cy="36" rx="17.5" ry="16" fill="#a8b4c0"/>
+    <ellipse cx="32" cy="48" rx="10" ry="8.5" fill="#eef3f7"/>
+    <ellipse cx="24.5" cy="34" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="24.5" cy="34.624" r="2.418" fill="#241c16"/>
+    <circle cx="25.67" cy="32.674" r="0.936" fill="#fff"/>
+    <ellipse cx="39.5" cy="34" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="39.5" cy="34.624" r="2.418" fill="#241c16"/>
+    <circle cx="40.67" cy="32.674" r="0.936" fill="#fff"/>
+    <ellipse cx="32" cy="46" rx="3.6" ry="2.8" fill="#f4a8b7"/>
   </symbol>
-  <symbol id="pc2" viewBox="0 0 64 64"><!-- cat: pointed ears, whiskers -->
-    <path fill="#fff" d="M13 30 L15 7 L33 20 Z"/><path fill="#fff" d="M51 30 L49 7 L31 20 Z"/>
-    <path fill="#22303a" d="M18 25 L19 14 L27 21 Z"/><path fill="#22303a" d="M46 25 L45 14 L37 21 Z"/>
-    <ellipse fill="#fff" cx="32" cy="36" rx="19.5" ry="17.5"/>
-    <circle fill="#22303a" cx="24" cy="33" r="3.4"/><circle fill="#22303a" cx="40" cy="33" r="3.4"/>
-    <path fill="#22303a" d="M32 41 l4.5 4 -4.5 3.5 -4.5 -3.5 Z"/>
-    <rect fill="#22303a" x="12" y="41" width="10" height="2.4" rx="1.2" transform="rotate(-9 17 42)"/>
-    <rect fill="#22303a" x="12" y="47" width="10" height="2.4" rx="1.2" transform="rotate(7 17 48)"/>
-    <rect fill="#22303a" x="42" y="41" width="10" height="2.4" rx="1.2" transform="rotate(9 47 42)"/>
-    <rect fill="#22303a" x="42" y="47" width="10" height="2.4" rx="1.2" transform="rotate(-7 47 48)"/>
+  <symbol id="pc_f2" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <path d="M13 31 L15 8 L34 21 Z" fill="#f2a03f"/>
+    <path d="M51 31 L49 8 L30 21 Z" fill="#f2a03f"/>
+    <path d="M18 26 L19.5 15 L28 22 Z" fill="#f58fa8"/>
+    <path d="M46 26 L44.5 15 L36 22 Z" fill="#f58fa8"/>
+    <ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#f2a03f"/>
+    <ellipse cx="32" cy="45" rx="12" ry="9" fill="#fff3df"/>
+    <ellipse cx="24" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="24" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="25.26" cy="32.572" r="1.008" fill="#fff"/>
+    <ellipse cx="40" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="40" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="41.26" cy="32.572" r="1.008" fill="#fff"/>
+    <path d="M32 41.5 l3.6 3.2 -3.6 2.8 -3.6 -2.8 Z" fill="#f58fa8"/>
+    <rect x="9" y="43" width="11" height="2" rx="1" transform="rotate(-8 14 44)" fill="#8a4a12"/>
+    <rect x="9" y="48" width="11" height="2" rx="1" transform="rotate(6 14 49)" fill="#8a4a12"/>
+    <rect x="44" y="43" width="11" height="2" rx="1" transform="rotate(8 50 44)" fill="#8a4a12"/>
+    <rect x="44" y="48" width="11" height="2" rx="1" transform="rotate(-6 50 49)" fill="#8a4a12"/>
   </symbol>
-  <symbol id="pc3" viewBox="0 0 64 64"><!-- dog: floppy ears, broad muzzle -->
-    <ellipse fill="#fff" cx="11" cy="35" rx="8" ry="16"/><ellipse fill="#fff" cx="53" cy="35" rx="8" ry="16"/>
-    <ellipse fill="#22303a" cx="11" cy="36" rx="3.6" ry="9"/><ellipse fill="#22303a" cx="53" cy="36" rx="3.6" ry="9"/>
-    <ellipse fill="#fff" cx="32" cy="33" rx="18" ry="17"/>
-    <ellipse fill="#fff" cx="32" cy="47" rx="12" ry="10"/>
-    <circle fill="#22303a" cx="25" cy="30" r="3.4"/><circle fill="#22303a" cx="39" cy="30" r="3.4"/>
-    <ellipse fill="#22303a" cx="32" cy="43" rx="5" ry="3.8"/>
-    <rect fill="#22303a" x="30.7" y="46" width="2.6" height="8" rx="1.3"/>
+  <symbol id="pc_f3" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <ellipse cx="11" cy="36" rx="8.5" ry="17" fill="#7a4a1e"/>
+    <ellipse cx="53" cy="36" rx="8.5" ry="17" fill="#7a4a1e"/>
+    <ellipse cx="32" cy="34" rx="18.5" ry="17" fill="#c98a4b"/>
+    <ellipse cx="32" cy="47" rx="13" ry="10.5" fill="#fbeedd"/>
+    <ellipse cx="24.5" cy="31" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="24.5" cy="31.64" r="2.48" fill="#241c16"/>
+    <circle cx="25.7" cy="29.64" r="0.96" fill="#fff"/>
+    <ellipse cx="39.5" cy="31" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="39.5" cy="31.64" r="2.48" fill="#241c16"/>
+    <circle cx="40.7" cy="29.64" r="0.96" fill="#fff"/>
+    <ellipse cx="32" cy="43" rx="4.6" ry="3.6" fill="#3d2a1c"/>
+    <path d="M32 47 v4" fill="none" stroke="#3d2a1c" stroke-width="2" stroke-linecap="round"/>
   </symbol>
-  <symbol id="pc4" viewBox="0 0 64 64"><!-- wolf: tall pointed ears, angular muzzle -->
-    <path fill="#fff" d="M9 28 L14 2 L31 18 Z"/><path fill="#fff" d="M55 28 L50 2 L33 18 Z"/>
-    <path fill="#22303a" d="M15 24 L17 10 L25 19 Z"/><path fill="#22303a" d="M49 24 L47 10 L39 19 Z"/>
-    <path fill="#fff" d="M32 15 L52 25 L46 44 L32 58 L18 44 L12 25 Z"/>
-    <path fill="#22303a" d="M20 32 L28 30 L27 35 Z"/><path fill="#22303a" d="M44 32 L36 30 L37 35 Z"/>
-    <path fill="#22303a" d="M32 42 l5 4.5 -5 4 -5 -4 Z"/>
+  <symbol id="pc_f4" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <path d="M9 29 L14 3 L32 19 Z" fill="#8496a8"/>
+    <path d="M55 29 L50 3 L32 19 Z" fill="#8496a8"/>
+    <path d="M15 25 L17.5 12 L26 20 Z" fill="#4a5766"/>
+    <path d="M49 25 L46.5 12 L38 20 Z" fill="#4a5766"/>
+    <path d="M32 16 L52 26 L46 45 L32 58 L18 45 L12 26 Z" fill="#8496a8"/>
+    <path d="M32 34 L44 40 L32 56 L20 40 Z" fill="#e8eef4"/>
+    <ellipse cx="23.5" cy="33" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="23.5" cy="33.624" r="2.418" fill="#241c16"/>
+    <circle cx="24.67" cy="31.674" r="0.936" fill="#fff"/>
+    <ellipse cx="40.5" cy="33" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="40.5" cy="33.624" r="2.418" fill="#241c16"/>
+    <circle cx="41.67" cy="31.674" r="0.936" fill="#fff"/>
+    <path d="M32 41 l4.2 3.6 -4.2 3.2 -4.2 -3.2 Z" fill="#2b3440"/>
   </symbol>
-  <symbol id="pc5" viewBox="0 0 64 64"><!-- leopard: rounded ears, spots -->
-    <circle fill="#fff" cx="15" cy="16" r="8"/><circle fill="#fff" cx="49" cy="16" r="8"/>
-    <circle fill="#22303a" cx="15" cy="16" r="3.6"/><circle fill="#22303a" cx="49" cy="16" r="3.6"/>
-    <ellipse fill="#fff" cx="32" cy="36" rx="19.5" ry="18"/>
-    <circle fill="#22303a" cx="17" cy="30" r="2.9"/><circle fill="#22303a" cx="20" cy="41" r="2.9"/>
-    <circle fill="#22303a" cx="47" cy="30" r="2.9"/><circle fill="#22303a" cx="44" cy="41" r="2.9"/>
-    <circle fill="#22303a" cx="32" cy="23" r="2.9"/><circle fill="#22303a" cx="24" cy="49" r="2.6"/>
-    <circle fill="#22303a" cx="40" cy="49" r="2.6"/>
-    <circle fill="#22303a" cx="25" cy="34" r="3.4"/><circle fill="#22303a" cx="39" cy="34" r="3.4"/>
-    <path fill="#22303a" d="M32 42 l4.5 4 -4.5 3.5 -4.5 -3.5 Z"/>
+  <symbol id="pc_f5" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <circle cx="15" cy="17" r="8.5" fill="#f0c04a"/>
+    <circle cx="49" cy="17" r="8.5" fill="#f0c04a"/>
+    <circle cx="15" cy="17" r="4.4" fill="#4a3410"/>
+    <circle cx="49" cy="17" r="4.4" fill="#4a3410"/>
+    <ellipse cx="32" cy="37" rx="20" ry="18" fill="#f0c04a"/>
+    <circle cx="16" cy="30" r="3.1" fill="#4a3410"/>
+    <circle cx="19" cy="42" r="3.1" fill="#4a3410"/>
+    <circle cx="48" cy="30" r="3.1" fill="#4a3410"/>
+    <circle cx="45" cy="42" r="3.1" fill="#4a3410"/>
+    <circle cx="32" cy="22" r="3.1" fill="#4a3410"/>
+    <circle cx="23" cy="51" r="2.7" fill="#4a3410"/>
+    <circle cx="41" cy="51" r="2.7" fill="#4a3410"/>
+    <ellipse cx="32" cy="45" rx="11" ry="8.5" fill="#fdf1cf"/>
+    <ellipse cx="24" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="24" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="25.26" cy="32.572" r="1.008" fill="#fff"/>
+    <ellipse cx="40" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="40" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="41.26" cy="32.572" r="1.008" fill="#fff"/>
+    <path d="M32 42 l3.6 3.2 -3.6 2.8 -3.6 -2.8 Z" fill="#e08a6a"/>
   </symbol>
-  <symbol id="pc6" viewBox="0 0 64 64"><!-- tiger: rounded ears, bold stripes -->
-    <circle fill="#fff" cx="14" cy="17" r="8.5"/><circle fill="#fff" cx="50" cy="17" r="8.5"/>
-    <circle fill="#22303a" cx="14" cy="17" r="4"/><circle fill="#22303a" cx="50" cy="17" r="4"/>
-    <ellipse fill="#fff" cx="32" cy="36" rx="20" ry="18.5"/>
-    <rect fill="#22303a" x="30.5" y="18" width="3" height="11" rx="1.5"/>
-    <rect fill="#22303a" x="22" y="20" width="3" height="9" rx="1.5" transform="rotate(-14 23.5 24)"/>
-    <rect fill="#22303a" x="39" y="20" width="3" height="9" rx="1.5" transform="rotate(14 40.5 24)"/>
-    <rect fill="#22303a" x="13" y="34" width="9" height="3" rx="1.5"/>
-    <rect fill="#22303a" x="13" y="42" width="9" height="3" rx="1.5"/>
-    <rect fill="#22303a" x="42" y="34" width="9" height="3" rx="1.5"/>
-    <rect fill="#22303a" x="42" y="42" width="9" height="3" rx="1.5"/>
-    <circle fill="#22303a" cx="25" cy="35" r="3.4"/><circle fill="#22303a" cx="39" cy="35" r="3.4"/>
-    <path fill="#22303a" d="M32 43 l4.5 4 -4.5 3.5 -4.5 -3.5 Z"/>
+  <symbol id="pc_f6" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <circle cx="14" cy="18" r="9" fill="#f4842c"/>
+    <circle cx="50" cy="18" r="9" fill="#f4842c"/>
+    <circle cx="14" cy="18" r="4.6" fill="#2a1a0e"/>
+    <circle cx="50" cy="18" r="4.6" fill="#2a1a0e"/>
+    <ellipse cx="32" cy="37" rx="20.5" ry="18.5" fill="#f4842c"/>
+    <rect x="30.4" y="19" width="3.2" height="10" rx="1.6" fill="#2a1a0e"/>
+    <rect x="21.5" y="21" width="3" height="8.5" rx="1.5" transform="rotate(-16 23 25)" fill="#2a1a0e"/>
+    <rect x="39.5" y="21" width="3" height="8.5" rx="1.5" transform="rotate(16 41 25)" fill="#2a1a0e"/>
+    <rect x="12" y="34" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <rect x="12" y="41" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <rect x="43.5" y="34" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <rect x="43.5" y="41" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <ellipse cx="32" cy="45" rx="12" ry="9" fill="#fff1e0"/>
+    <ellipse cx="24" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="24" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="25.26" cy="32.572" r="1.008" fill="#fff"/>
+    <ellipse cx="40" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="40" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="41.26" cy="32.572" r="1.008" fill="#fff"/>
+    <path d="M32 42 l3.8 3.2 -3.8 2.8 -3.8 -2.8 Z" fill="#e06a4a"/>
   </symbol>
-  <symbol id="pc7" viewBox="0 0 64 64"><!-- lion: full mane ring -->
-    <g fill="#fff">
-      <circle cx="32" cy="9" r="9.5"/><circle cx="48.3" cy="15.7" r="9.5"/>
-      <circle cx="55" cy="32" r="9.5"/><circle cx="48.3" cy="48.3" r="9.5"/>
-      <circle cx="32" cy="55" r="9.5"/><circle cx="15.7" cy="48.3" r="9.5"/>
-      <circle cx="9" cy="32" r="9.5"/><circle cx="15.7" cy="15.7" r="9.5"/>
-      <circle cx="32" cy="32" r="24"/>
-    </g>
-    <circle fill="#22303a" cx="32" cy="33" r="18.5"/>
-    <circle fill="#fff" cx="32" cy="33" r="16.5"/>
-    <circle fill="#22303a" cx="25.5" cy="30" r="3.1"/><circle fill="#22303a" cx="38.5" cy="30" r="3.1"/>
-    <path fill="#22303a" d="M32 37.5 l4.2 3.6 -4.2 3.2 -4.2 -3.2 Z"/>
-    <path fill="none" stroke="#22303a" stroke-width="2.2" stroke-linecap="round" d="M32 44.5 q0 4 -4.5 4.5"/><path fill="none" stroke="#22303a" stroke-width="2.2" stroke-linecap="round" d="M32 44.5 q0 4 4.5 4.5"/>
+  <symbol id="pc_f7" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <circle cx="54.0" cy="32.0" r="10" fill="#c4713a"/>
+    <circle cx="51.1" cy="43.0" r="10" fill="#c4713a"/>
+    <circle cx="43.0" cy="51.1" r="10" fill="#c4713a"/>
+    <circle cx="32.0" cy="54.0" r="10" fill="#c4713a"/>
+    <circle cx="21.0" cy="51.1" r="10" fill="#c4713a"/>
+    <circle cx="12.9" cy="43.0" r="10" fill="#c4713a"/>
+    <circle cx="10.0" cy="32.0" r="10" fill="#c4713a"/>
+    <circle cx="12.9" cy="21.0" r="10" fill="#c4713a"/>
+    <circle cx="21.0" cy="12.9" r="10" fill="#c4713a"/>
+    <circle cx="32.0" cy="10.0" r="10" fill="#c4713a"/>
+    <circle cx="43.0" cy="12.9" r="10" fill="#c4713a"/>
+    <circle cx="51.1" cy="21.0" r="10" fill="#c4713a"/>
+    <circle cx="32" cy="32" r="23" fill="#c4713a"/>
+    <circle cx="32" cy="34" r="17.5" fill="#f6c453"/>
+    <ellipse cx="32" cy="42" rx="11" ry="8" fill="#fff0cf"/>
+    <ellipse cx="25.5" cy="32" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="25.5" cy="32.64" r="2.48" fill="#241c16"/>
+    <circle cx="26.7" cy="30.64" r="0.96" fill="#fff"/>
+    <ellipse cx="38.5" cy="32" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="38.5" cy="32.64" r="2.48" fill="#241c16"/>
+    <circle cx="39.7" cy="30.64" r="0.96" fill="#fff"/>
+    <path d="M32 39 l3.6 3.2 -3.6 2.8 -3.6 -2.8 Z" fill="#c4713a"/>
   </symbol>
-  <symbol id="pc8" viewBox="0 0 64 64"><!-- elephant: big ears, trunk, tusks -->
-    <ellipse fill="#fff" cx="10.5" cy="28" rx="12.5" ry="18"/><ellipse fill="#fff" cx="53.5" cy="28" rx="12.5" ry="18"/>
-    <ellipse fill="#22303a" cx="10.5" cy="29" rx="6" ry="10.5"/><ellipse fill="#22303a" cx="53.5" cy="29" rx="6" ry="10.5"/>
-    <ellipse fill="#fff" cx="32" cy="27" rx="15" ry="16"/>
-    <path fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" d="M32 36 C32 46 28 50 30.5 57"/>
-    <path fill="#fff" d="M21.5 40 q-4 8 -0.5 12.5 q1.5 -7 4.5 -9.5 Z"/>
-    <path fill="#fff" d="M42.5 40 q4 8 0.5 12.5 q-1.5 -7 -4.5 -9.5 Z"/>
-    <circle fill="#22303a" cx="24.5" cy="24" r="3"/><circle fill="#22303a" cx="39.5" cy="24" r="3"/>
+  <symbol id="pc_f8" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="#fdf7ec"/>
+    <ellipse cx="11" cy="29" rx="12.5" ry="18" fill="#94a6b8"/>
+    <ellipse cx="53" cy="29" rx="12.5" ry="18" fill="#94a6b8"/>
+    <ellipse cx="11" cy="30" rx="6.5" ry="11" fill="#f0a5b4"/>
+    <ellipse cx="53" cy="30" rx="6.5" ry="11" fill="#f0a5b4"/>
+    <ellipse cx="32" cy="29" rx="15.5" ry="16.5" fill="#94a6b8"/>
+    <path d="M22 42 q-4 8 -0.5 12.5 q1.5 -7 5 -9.5 Z" fill="#fdfaf2"/>
+    <path d="M42 42 q4 8 0.5 12.5 q-1.5 -7 -5 -9.5 Z" fill="#fdfaf2"/>
+    <path d="M32 38 C32 47 28 51 30.5 58" fill="none" stroke="#94a6b8" stroke-width="11" stroke-linecap="round"/>
+    <ellipse cx="24.5" cy="26" rx="3.6" ry="4.032" fill="#fff"/>
+    <circle cx="24.5" cy="26.576" r="2.232" fill="#241c16"/>
+    <circle cx="25.58" cy="24.776" r="0.864" fill="#fff"/>
+    <ellipse cx="39.5" cy="26" rx="3.6" ry="4.032" fill="#fff"/>
+    <circle cx="39.5" cy="26.576" r="2.232" fill="#241c16"/>
+    <circle cx="40.58" cy="24.776" r="0.864" fill="#fff"/>
+  </symbol>
+  <symbol id="pc_g1" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <circle cx="15" cy="20" r="12" fill="#a8b4c0"/>
+    <circle cx="49" cy="20" r="12" fill="#a8b4c0"/>
+    <circle cx="15" cy="20" r="7" fill="#f4a8b7"/>
+    <circle cx="49" cy="20" r="7" fill="#f4a8b7"/>
+    <ellipse cx="32" cy="36" rx="17.5" ry="16" fill="url(#grad1)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <ellipse cx="32" cy="48" rx="10" ry="8.5" fill="#eef3f7"/>
+    <ellipse cx="24.5" cy="34" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="24.5" cy="34.624" r="2.418" fill="#241c16"/>
+    <circle cx="25.67" cy="32.674" r="0.936" fill="#fff"/>
+    <ellipse cx="39.5" cy="34" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="39.5" cy="34.624" r="2.418" fill="#241c16"/>
+    <circle cx="40.67" cy="32.674" r="0.936" fill="#fff"/>
+    <ellipse cx="32" cy="46" rx="3.6" ry="2.8" fill="#f4a8b7"/>
+  </symbol>
+  <symbol id="pc_g2" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <path d="M13 31 L15 8 L34 21 Z" fill="#f2a03f"/>
+    <path d="M51 31 L49 8 L30 21 Z" fill="#f2a03f"/>
+    <path d="M18 26 L19.5 15 L28 22 Z" fill="#f58fa8"/>
+    <path d="M46 26 L44.5 15 L36 22 Z" fill="#f58fa8"/>
+    <ellipse cx="32" cy="37" rx="20" ry="17.5" fill="url(#grad2)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <ellipse cx="32" cy="45" rx="12" ry="9" fill="#fff3df"/>
+    <ellipse cx="24" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="24" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="25.26" cy="32.572" r="1.008" fill="#fff"/>
+    <ellipse cx="40" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="40" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="41.26" cy="32.572" r="1.008" fill="#fff"/>
+    <path d="M32 41.5 l3.6 3.2 -3.6 2.8 -3.6 -2.8 Z" fill="#f58fa8"/>
+    <rect x="9" y="43" width="11" height="2" rx="1" transform="rotate(-8 14 44)" fill="#8a4a12"/>
+    <rect x="9" y="48" width="11" height="2" rx="1" transform="rotate(6 14 49)" fill="#8a4a12"/>
+    <rect x="44" y="43" width="11" height="2" rx="1" transform="rotate(8 50 44)" fill="#8a4a12"/>
+    <rect x="44" y="48" width="11" height="2" rx="1" transform="rotate(-6 50 49)" fill="#8a4a12"/>
+  </symbol>
+  <symbol id="pc_g3" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <ellipse cx="11" cy="36" rx="8.5" ry="17" fill="#7a4a1e"/>
+    <ellipse cx="53" cy="36" rx="8.5" ry="17" fill="#7a4a1e"/>
+    <ellipse cx="32" cy="34" rx="18.5" ry="17" fill="url(#grad3)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <ellipse cx="32" cy="47" rx="13" ry="10.5" fill="#fbeedd"/>
+    <ellipse cx="24.5" cy="31" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="24.5" cy="31.64" r="2.48" fill="#241c16"/>
+    <circle cx="25.7" cy="29.64" r="0.96" fill="#fff"/>
+    <ellipse cx="39.5" cy="31" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="39.5" cy="31.64" r="2.48" fill="#241c16"/>
+    <circle cx="40.7" cy="29.64" r="0.96" fill="#fff"/>
+    <ellipse cx="32" cy="43" rx="4.6" ry="3.6" fill="#3d2a1c"/>
+    <path d="M32 47 v4" fill="none" stroke="#3d2a1c" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="pc_g4" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <path d="M9 29 L14 3 L32 19 Z" fill="#8496a8"/>
+    <path d="M55 29 L50 3 L32 19 Z" fill="#8496a8"/>
+    <path d="M15 25 L17.5 12 L26 20 Z" fill="#4a5766"/>
+    <path d="M49 25 L46.5 12 L38 20 Z" fill="#4a5766"/>
+    <path d="M32 16 L52 26 L46 45 L32 58 L18 45 L12 26 Z" fill="url(#grad4)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <path d="M32 34 L44 40 L32 56 L20 40 Z" fill="#e8eef4"/>
+    <ellipse cx="23.5" cy="33" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="23.5" cy="33.624" r="2.418" fill="#241c16"/>
+    <circle cx="24.67" cy="31.674" r="0.936" fill="#fff"/>
+    <ellipse cx="40.5" cy="33" rx="3.9" ry="4.368" fill="#fff"/>
+    <circle cx="40.5" cy="33.624" r="2.418" fill="#241c16"/>
+    <circle cx="41.67" cy="31.674" r="0.936" fill="#fff"/>
+    <path d="M32 41 l4.2 3.6 -4.2 3.2 -4.2 -3.2 Z" fill="#2b3440"/>
+  </symbol>
+  <symbol id="pc_g5" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <circle cx="15" cy="17" r="8.5" fill="#f0c04a"/>
+    <circle cx="49" cy="17" r="8.5" fill="#f0c04a"/>
+    <circle cx="15" cy="17" r="4.4" fill="#4a3410"/>
+    <circle cx="49" cy="17" r="4.4" fill="#4a3410"/>
+    <ellipse cx="32" cy="37" rx="20" ry="18" fill="url(#grad5)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <circle cx="16" cy="30" r="3.1" fill="#4a3410"/>
+    <circle cx="19" cy="42" r="3.1" fill="#4a3410"/>
+    <circle cx="48" cy="30" r="3.1" fill="#4a3410"/>
+    <circle cx="45" cy="42" r="3.1" fill="#4a3410"/>
+    <circle cx="32" cy="22" r="3.1" fill="#4a3410"/>
+    <circle cx="23" cy="51" r="2.7" fill="#4a3410"/>
+    <circle cx="41" cy="51" r="2.7" fill="#4a3410"/>
+    <ellipse cx="32" cy="45" rx="11" ry="8.5" fill="#fdf1cf"/>
+    <ellipse cx="24" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="24" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="25.26" cy="32.572" r="1.008" fill="#fff"/>
+    <ellipse cx="40" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="40" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="41.26" cy="32.572" r="1.008" fill="#fff"/>
+    <path d="M32 42 l3.6 3.2 -3.6 2.8 -3.6 -2.8 Z" fill="#e08a6a"/>
+  </symbol>
+  <symbol id="pc_g6" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <circle cx="14" cy="18" r="9" fill="#f4842c"/>
+    <circle cx="50" cy="18" r="9" fill="#f4842c"/>
+    <circle cx="14" cy="18" r="4.6" fill="#2a1a0e"/>
+    <circle cx="50" cy="18" r="4.6" fill="#2a1a0e"/>
+    <ellipse cx="32" cy="37" rx="20.5" ry="18.5" fill="url(#grad6)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <rect x="30.4" y="19" width="3.2" height="10" rx="1.6" fill="#2a1a0e"/>
+    <rect x="21.5" y="21" width="3" height="8.5" rx="1.5" transform="rotate(-16 23 25)" fill="#2a1a0e"/>
+    <rect x="39.5" y="21" width="3" height="8.5" rx="1.5" transform="rotate(16 41 25)" fill="#2a1a0e"/>
+    <rect x="12" y="34" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <rect x="12" y="41" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <rect x="43.5" y="34" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <rect x="43.5" y="41" width="8.5" height="3" rx="1.5" fill="#2a1a0e"/>
+    <ellipse cx="32" cy="45" rx="12" ry="9" fill="#fff1e0"/>
+    <ellipse cx="24" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="24" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="25.26" cy="32.572" r="1.008" fill="#fff"/>
+    <ellipse cx="40" cy="34" rx="4.2" ry="4.704" fill="#fff"/>
+    <circle cx="40" cy="34.672" r="2.604" fill="#241c16"/>
+    <circle cx="41.26" cy="32.572" r="1.008" fill="#fff"/>
+    <path d="M32 42 l3.8 3.2 -3.8 2.8 -3.8 -2.8 Z" fill="#e06a4a"/>
+  </symbol>
+  <symbol id="pc_g7" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <circle cx="54.0" cy="32.0" r="10" fill="#c4713a"/>
+    <circle cx="51.1" cy="43.0" r="10" fill="#c4713a"/>
+    <circle cx="43.0" cy="51.1" r="10" fill="#c4713a"/>
+    <circle cx="32.0" cy="54.0" r="10" fill="#c4713a"/>
+    <circle cx="21.0" cy="51.1" r="10" fill="#c4713a"/>
+    <circle cx="12.9" cy="43.0" r="10" fill="#c4713a"/>
+    <circle cx="10.0" cy="32.0" r="10" fill="#c4713a"/>
+    <circle cx="12.9" cy="21.0" r="10" fill="#c4713a"/>
+    <circle cx="21.0" cy="12.9" r="10" fill="#c4713a"/>
+    <circle cx="32.0" cy="10.0" r="10" fill="#c4713a"/>
+    <circle cx="43.0" cy="12.9" r="10" fill="#c4713a"/>
+    <circle cx="51.1" cy="21.0" r="10" fill="#c4713a"/>
+    <circle cx="32" cy="32" r="23" fill="#c4713a"/>
+    <circle cx="32" cy="34" r="17.5" fill="url(#grad7)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <ellipse cx="32" cy="42" rx="11" ry="8" fill="#fff0cf"/>
+    <ellipse cx="25.5" cy="32" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="25.5" cy="32.64" r="2.48" fill="#241c16"/>
+    <circle cx="26.7" cy="30.64" r="0.96" fill="#fff"/>
+    <ellipse cx="38.5" cy="32" rx="4" ry="4.48" fill="#fff"/>
+    <circle cx="38.5" cy="32.64" r="2.48" fill="#241c16"/>
+    <circle cx="39.7" cy="30.64" r="0.96" fill="#fff"/>
+    <path d="M32 39 l3.6 3.2 -3.6 2.8 -3.6 -2.8 Z" fill="#c4713a"/>
+  </symbol>
+  <symbol id="pc_g8" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="32" fill="url(#medal)"/>
+    <ellipse cx="11" cy="29" rx="12.5" ry="18" fill="#94a6b8"/>
+    <ellipse cx="53" cy="29" rx="12.5" ry="18" fill="#94a6b8"/>
+    <ellipse cx="11" cy="30" rx="6.5" ry="11" fill="#f0a5b4"/>
+    <ellipse cx="53" cy="30" rx="6.5" ry="11" fill="#f0a5b4"/>
+    <ellipse cx="32" cy="29" rx="15.5" ry="16.5" fill="url(#grad8)"/>
+    <ellipse cx="25" cy="24" rx="9" ry="6" fill="#fff" opacity=".30" transform="rotate(-22 25 24)"/>
+    <path d="M22 42 q-4 8 -0.5 12.5 q1.5 -7 5 -9.5 Z" fill="#fdfaf2"/>
+    <path d="M42 42 q4 8 0.5 12.5 q-1.5 -7 -5 -9.5 Z" fill="#fdfaf2"/>
+    <path d="M32 38 C32 47 28 51 30.5 58" fill="none" stroke="url(#grad8)" stroke-width="11" stroke-linecap="round"/>
+    <ellipse cx="24.5" cy="26" rx="3.6" ry="4.032" fill="#fff"/>
+    <circle cx="24.5" cy="26.576" r="2.232" fill="#241c16"/>
+    <circle cx="25.58" cy="24.776" r="0.864" fill="#fff"/>
+    <ellipse cx="39.5" cy="26" rx="3.6" ry="4.032" fill="#fff"/>
+    <circle cx="39.5" cy="26.576" r="2.232" fill="#241c16"/>
+    <circle cx="40.58" cy="24.776" r="0.864" fill="#fff"/>
   </symbol>
 </svg>
 
@@ -193,9 +440,13 @@
   <div class="card">
     <h2 data-t="menu.pieces">3. Choose the piece markings</h2>
     <div class="styles" id="styleChoices">
-      <button class="style" data-style="art">
-        <span class="style-name" data-t="style.art">Drawn for this game</span>
-        <span class="style-preview" data-style-preview="art"></span>
+      <button class="style" data-style="glossy">
+        <span class="style-name" data-t="style.glossy">Coloured animals, glossy</span>
+        <span class="style-preview" data-style-preview="glossy"></span>
+      </button>
+      <button class="style" data-style="flat">
+        <span class="style-name" data-t="style.flat">Coloured animals, flat</span>
+        <span class="style-preview" data-style-preview="flat"></span>
       </button>
       <button class="style" data-style="face">
         <span class="style-name" data-t="style.face">Animal heads</span>

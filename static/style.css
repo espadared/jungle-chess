@@ -227,7 +227,18 @@ body {
 }
 /* Pieces drawn for this game: white animal, ink detail, identical everywhere. */
 svg.pc { display: block; width: 100%; height: 100%; }
+
+/* The drawn pieces carry their own cream medallion, so the token colour shows
+   only as a ring around it - and that ring is the single thing telling you
+   whose piece it is. It has to be thick and strongly coloured, not a hairline. */
 .piece svg.pc { width: 80%; height: 80%; }
+.piece.st-glossy, .piece.st-flat { border-width: 2px; }
+.piece.r0.st-glossy, .piece.r0.st-flat {
+  background: #de4030; border-color: rgba(255,255,255,.45);
+}
+.piece.r1.st-glossy, .piece.r1.st-flat {
+  background: #1d2630; border-color: rgba(255,255,255,.40);
+}
 /* inline in the move log, captured row, rank line and previews */
 svg.pc.tiny {
   display: inline-block; width: 1.15em; height: 1.15em;

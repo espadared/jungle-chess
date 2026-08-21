@@ -22,11 +22,12 @@
   var lang = recall('jungle-lang', (navigator.language || '').indexOf('zh') === 0 ? 'zh' : 'en');
   if (!PACKS[lang]) lang = 'en';
 
-  // 'art' is the set drawn for this game - the only complete one, and the only
-  // one that looks the same on every device.
-  var STYLES = ['art', 'face', 'body', 'zh'];
-  var pieceStyle = recall('jungle-pieces', 'art');
-  if (STYLES.indexOf(pieceStyle) === -1) pieceStyle = 'art';
+  // The two coloured sets are drawn for this game - the only complete ones, and
+  // the only ones that look the same on every device.
+  var STYLES = ['glossy', 'flat', 'face', 'body', 'zh'];
+  var DRAWN = { glossy: 'g', flat: 'f' };
+  var pieceStyle = recall('jungle-pieces', 'glossy');
+  if (STYLES.indexOf(pieceStyle) === -1) pieceStyle = 'glossy';
 
   // Look a phrase up, filling in {placeholders}.
   function T(key, vals) {
@@ -42,16 +43,16 @@
   }
 
   function glyph(rank) {
-    return pieceStyle === 'art' ? '' : PIECE_SETS[pieceStyle][rank];
+    return DRAWN[pieceStyle] ? '' : PIECE_SETS[pieceStyle][rank];
   }
 
-  // Markup for one piece. The drawn set needs an <svg>, the others are text -
+  // Markup for one piece. The drawn sets need an <svg>, the others are text -
   // so every place a piece appears writes HTML rather than plain text.
   function glyphHTML(rank, style, cls) {
     style = style || pieceStyle;
-    if (style === 'art') {
+    if (DRAWN[style]) {
       return '<svg class="pc' + (cls ? ' ' + cls : '') + '" viewBox="0 0 64 64">' +
-             '<use href="#pc' + rank + '"/></svg>';
+             '<use href="#pc_' + DRAWN[style] + rank + '"/></svg>';
     }
     return PIECE_SETS[style][rank];
   }
@@ -810,7 +811,7 @@
   }
 
   function setPieceStyle(next) {
-    pieceStyle = STYLES.indexOf(next) !== -1 ? next : 'art';
+    pieceStyle = STYLES.indexOf(next) !== -1 ? next : 'glossy';
     remember('jungle-pieces', pieceStyle);
     applyPieceStyle();
   }
