@@ -63,9 +63,28 @@ that, online play works on the website and fails silently in the app.
 
 ## Building for the stores
 
-**iPhone** - open `ios/App/App.xcworkspace` in Xcode, set the team to your
-Apple Developer account under Signing & Capabilities, pick "Any iOS Device",
-then Product → Archive and follow the Distribute App flow to App Store Connect.
+**iPhone** - open `ios/App/App.xcodeproj` in Xcode (Capacitor 8 uses Swift
+Package Manager, so there is no `.xcworkspace` and no CocoaPods step), set the
+team under Signing & Capabilities, pick "Any iOS Device", then Product →
+Archive and follow the Distribute App flow to App Store Connect.
+
+### Onto your own iPhone without paying
+
+A free Apple ID is enough to run it on your own device:
+
+1. `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` once, so
+   the command line tools point at Xcode rather than the standalone CLT.
+2. Xcode → Settings → Accounts → **+** → sign in with your Apple ID.
+3. Open `ios/App/App.xcodeproj`, select the **App** target → Signing &
+   Capabilities → Team → your name (Personal Team).
+4. Plug the iPhone in, unlock it, trust the Mac, pick it in the device menu,
+   press **Run**.
+5. On the phone: Settings → General → VPN & Device Management → trust the
+   developer certificate. Then the app opens.
+
+Free-account limits: the build **stops working after 7 days** and has to be
+re-installed from Xcode, and you can have at most three such apps on a device
+at once. A paid membership removes both.
 
 **Android** - open `android/` in Android Studio, then Build → Generate Signed
 App Bundle. Create an upload key the first time and **keep it safe**: lose it
