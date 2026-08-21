@@ -141,3 +141,31 @@ device.
 need two devices: tap "Create a room" on one, then enter the four-letter code
 on the other. No account or login is needed anywhere in the app.
 ```
+
+---
+
+## Screenshots
+
+In `mobile/store/screenshots/`, captured from the iPhone 17 Pro Max simulator
+at **1320 x 2868** - Apple's 6.9" size, which App Store Connect accepts for
+every iPhone, so one set covers the lot.
+
+| File | Shows |
+|------|-------|
+| `en-1-rules.png` | The four trap rules - the thing no other version offers |
+| `en-2-modes.png` | Four difficulty levels, pass-and-play, online rooms |
+| `en-3-board.png` | A game against Hard, a piece selected with its moves marked |
+| `zh-1-menu.png` | The same menu in Chinese |
+| `zh-2-board.png` | The board with the characters a real board uses |
+| `zh-3-pieces.png` | All three piece sets |
+
+Upload the `en-*` files under English and the `zh-*` files under Simplified
+Chinese. Apple takes up to 10 per language and shows the first three in search
+results, so keep them in this order.
+
+Android wants the same pictures at its own sizes; re-shoot from the emulator
+once Android Studio is installed.
+
+To retake any of them: build to the simulator (see `mobile/README.md`), drive
+the app to the screen you want, then
+`xcrun simctl io <udid> screenshot <file>.png`.
