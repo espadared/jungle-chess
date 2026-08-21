@@ -188,7 +188,10 @@ body {
 .board-wrap { position: relative; display: flex; justify-content: center; }
 .board {
   position: relative;
-  width: min(94vw, 430px, calc((100vh - 330px) * 0.778));
+  /* The last term keeps the whole board on screen when there is height to
+     spare. The floor stops it collapsing to nothing in landscape, where there
+     is almost no height - better to scroll than to play on a 35px board. */
+  width: min(94vw, 430px, max(240px, calc((100vh - 330px) * 0.778)));
   aspect-ratio: 7 / 9;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
