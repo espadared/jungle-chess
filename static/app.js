@@ -22,12 +22,13 @@
   var lang = recall('jungle-lang', (navigator.language || '').indexOf('zh') === 0 ? 'zh' : 'en');
   if (!PACKS[lang]) lang = 'en';
 
-  // The two coloured sets are drawn for this game - the only complete ones, and
-  // the only ones that look the same on every device.
-  var STYLES = ['glossy', 'flat', 'face', 'body', 'zh'];
-  var DRAWN = { glossy: 'g', flat: 'f' };
-  var pieceStyle = recall('jungle-pieces', 'glossy');
-  if (STYLES.indexOf(pieceStyle) === -1) pieceStyle = 'glossy';
+  // The coloured set is drawn for this game - the only complete one, and the
+  // only one that looks the same on every device. Anyone whose saved choice is
+  // a set that no longer exists quietly lands back on it.
+  var STYLES = ['flat', 'body', 'zh'];
+  var DRAWN = { flat: 'f' };
+  var pieceStyle = recall('jungle-pieces', 'flat');
+  if (STYLES.indexOf(pieceStyle) === -1) pieceStyle = 'flat';
 
   // Look a phrase up, filling in {placeholders}.
   function T(key, vals) {
@@ -793,8 +794,8 @@
       var which = el.dataset.stylePreview;
       var html = '';
       for (var r = 8; r >= 1; r--) {
-        // only the two emoji sets have animals they cannot draw properly
-        var stuck = (which === 'face' || which === 'body') && STUCK.indexOf(r) !== -1;
+        // the emoji set has two animals it cannot draw as a full animal
+        var stuck = which === 'body' && STUCK.indexOf(r) !== -1;
         html += '<span class="pv-one' + (stuck ? ' stuck' : '') + '">' +
                 glyphHTML(r, which, 'tiny') + '</span>';
       }
@@ -811,7 +812,7 @@
   }
 
   function setPieceStyle(next) {
-    pieceStyle = STYLES.indexOf(next) !== -1 ? next : 'glossy';
+    pieceStyle = STYLES.indexOf(next) !== -1 ? next : 'flat';
     remember('jungle-pieces', pieceStyle);
     applyPieceStyle();
   }

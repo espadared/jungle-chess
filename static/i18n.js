@@ -11,13 +11,13 @@
   // same in both picture sets - it cannot be fixed, only stated plainly.
   // MARKED lists them so the picker can show which ones do not change.
   var PIECE_SETS = {
-    face: ['', '🐭', '🐱', '🐶', '🐺', '🐆', '🐯', '🦁', '🐘'],
     body: ['', '🐀', '🐈', '🐕', '🐺', '🐆', '🐅', '🦁', '🐘'],
     zh:   ['', '鼠', '猫', '狗', '狼', '豹', '虎', '狮', '象']
   };
 
-  // ranks whose picture is identical in both emoji sets
-  var STUCK = [4, 5, 7, 8];   // wolf, leopard, lion, elephant
+  // Unicode has no lion or wolf body, so those two can only ever show as a
+  // head. The picker marks them rather than looking like a mistake.
+  var STUCK = [4, 7];   // wolf, lion
 
   var EN = {
     'lang.button': '中文',
@@ -46,13 +46,11 @@
     'chip.safe': 'Safe traps · variation 2',
     'chip.home': 'Home refuge · variation 2b',
 
-    'style.glossy': 'Coloured animals, glossy',
-    'style.flat': 'Coloured animals, flat',
-    'style.face': 'Emoji heads',
+    'style.flat': 'Coloured animals',
     'style.body': 'Emoji animals',
     'style.zh': 'Chinese characters',
-    'style.note': 'The two coloured sets are drawn for this game — same eight animals, one shaded like a toy and one flat. Stripes for the tiger, spots for the leopard, and identical on every phone.',
-    'style.stuck': 'Emoji has no lion or wolf body, and no leopard or elephant face — so those four (marked ·) are the same picture in both emoji sets, and emoji is drawn differently on iPhone, Android and Windows.',
+    'style.note': 'The coloured animals are drawn for this game — stripes for the tiger, spots for the leopard, and identical on every phone.',
+    'style.stuck': 'Emoji has no lion or wolf body, so those two (marked ·) show as heads instead — and emoji is drawn differently on iPhone, Android and Windows.',
 
     'ai.title': '🤖 Play the computer',
     'level.easy': 'Easy',
@@ -209,13 +207,11 @@
     'chip.safe': '安全陷阱 · 变体二',
     'chip.home': '自家庇护 · 变体二B',
 
-    'style.glossy': '彩色动物 · 立体',
-    'style.flat': '彩色动物 · 扁平',
-    'style.face': '表情头像',
-    'style.body': '表情全身',
+    'style.flat': '彩色动物',
+    'style.body': '表情动物',
     'style.zh': '汉字',
-    'style.note': '两套彩色图案是本游戏专属的——同样的八只动物，一套做成立体质感，一套是扁平风格。老虎有条纹，豹子有斑点，而且在每台手机上长得一模一样。',
-    'style.stuck': '表情符号里没有狮和狼的全身图，也没有豹和象的头像——所以这四个（标了 · 的）在两套表情里是同一张图；而且表情在 iPhone、安卓和 Windows 上画法各不相同。',
+    'style.note': '彩色动物是本游戏专属的图案——老虎有条纹，豹子有斑点，而且在每台手机上长得一模一样。',
+    'style.stuck': '表情符号里没有狮和狼的全身图，所以这两个（标了 · 的）只能用头像；而且表情在 iPhone、安卓和 Windows 上画法各不相同。',
 
     'ai.title': '🤖 与电脑对战',
     'level.easy': '简单',
