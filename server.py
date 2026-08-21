@@ -175,6 +175,9 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         if path == "/api/state":
             self.handle_state(parse_qs(parsed.query))
+        elif path in ("/privacy", "/privacy.html"):
+            # Both app stores insist on a public link for this.
+            self.send_file(STATIC / "privacy.html")
         elif path == "/sw.js":
             # The service worker has to be served from the root or it is only
             # allowed to look after /static/.
